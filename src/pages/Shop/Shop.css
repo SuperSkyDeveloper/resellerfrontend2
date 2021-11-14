@@ -1,0 +1,47 @@
+.rounded-lg {
+    border-radius: 1rem !important;
+  }
+  .text-small {
+    font-size: 0.9rem !important;
+  }
+  .custom-separator {
+    width: 5rem;
+    height: 6px;
+    border-radius: 1rem;
+  }
+  .text-uppercase {
+    letter-spacing: 0.2em;
+  }
+  /*
+  *
+  * ==========================================
+  * FOR DEMO PURPOSES
+  * ==========================================
+  *
+  */
+  body {
+    background: #00B4DB;
+    background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);
+    background: linear-gradient(to right, #0083B0, #00B4DB);
+    color: #514B64;
+    min-height: 100vh;
+  }
+
+  .btn-price {
+      background-color: #0d6efd ;
+      padding: 15px 30px;
+      border-radius: 30px;
+      color: white;
+      
+  }
+  .bg-white a {
+    color:rgb(226, 168, 31) !important;
+    font-size: 20px;
+    font-weight: 600;
+    background: rgb(83, 81, 223);
+    padding:10px 30px;
+    border-radius: 5px;
+  }
+  .bg-white a:hover {
+    background: rgb(40, 37, 207);
+  }

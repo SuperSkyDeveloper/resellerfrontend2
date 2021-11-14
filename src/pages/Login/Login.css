@@ -1,0 +1,23 @@
+.auth-form {
+    width: 28rem;
+    max-width: 80%;
+    margin: 5rem auto;
+  }
+.login-body {
+    width:100%;
+    background-color: rgba(25, 21, 27, 0.993);
+    padding: 20px 0;
+    min-height:750px;
+}
+.auth-form {
+    padding:50px;
+    border: 2px solid #efecf3;
+    border-radius: 15px;
+}
+.auth-form h3 {
+    color:cornsilk;
+    font-size: 30px;
+    text-align: center;
+    margin-top: 7px;
+    margin-bottom: 35px;
+}

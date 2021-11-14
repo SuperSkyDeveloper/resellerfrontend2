@@ -1,0 +1,33 @@
+.reseller-body {
+    padding:50px 5%;
+    background-color: rgba(28, 42, 39, 0.972);
+    min-height:750px;
+}
+.reseller-body-header, .reseller-header-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.create-account {
+    width:150px;
+}
+.reseller-body-header {
+    margin: 30px 50px 50px 50px;
+    color: white;
+}
+.add-user {
+    margin:0;
+}
+/* .reseller-table {
+    background-color: rgb(161, 166, 235);
+    margin: 0 50px;
+    padding:50px;
+    box-shadow: 0 4px 8px 0 rgb(255, 253, 253), 5px 6px 20px 0 rgb(248, 248, 248);
+    border-radius: 15px;
+} */
+/* .MuiFormControlLabel-label {
+    color:white;
+}
+.MuiPaper-rounded {
+    padding-right: 25px;;
+} */

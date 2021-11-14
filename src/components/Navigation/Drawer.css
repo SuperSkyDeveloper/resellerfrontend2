@@ -1,0 +1,34 @@
+
+.MuiAppBar-root {
+     background-color:  rgb(7, 32, 24) !important;
+     padding: 15px 0;
+}
+.MuiList-root {
+     margin-left: 25px !important;
+}
+.MuiDrawer-paperAnchorLeft {
+     padding-top:25px !important;
+}
+.menu-item {
+     margin-left:30px;
+     text-decoration: none;
+}
+a {
+     text-decoration: none !important;
+     color:rgb(117 117 117) !important;
+}
+button {
+     background-color: transparent;
+     border: none;
+     padding:0;
+     color:rgb(117 117 117);
+}
+.logo {
+     color:white;
+     text-shadow: 6px 2px 4px #4cf30a;
+     font-family: fantasy;
+     font-size: 40px;
+}
+.active {
+     color:#5101d1 !important;
+}

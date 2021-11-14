@@ -1,0 +1,52 @@
+.paypal-body {
+    width:100%;
+    background: #685784;
+    padding: 20px 0;
+    min-height:750px;
+    display: flex;
+    text-align: center;
+    justify-content: space-evenly;
+}
+.main-paypal {
+    background: #ffffff;
+    margin-top: 20%; 
+    padding: 30px; 
+    text-align: center; 
+    border-radius: 5px;
+}
+.cover {
+    padding: 2px; 
+}
+.padder {
+    padding-left: 10px; 
+}
+
+.btn-payment {
+    background: #ffc439 !important;
+    border-radius: 5px !important;
+}
+.btn-payment:hover {
+    background: #eeae18 !important;
+}
+.paypal-text-first {
+    color:#003087;
+    font-size: 25px;
+    font-weight: 700;
+}
+.paypal-text-first:hover {
+    color:#022b77;
+}
+.paypal-text-second {
+    color:#009cde;
+    font-size: 25px;
+    font-weight: 700;
+}
+.paypal-text-second:hover {
+    color:#0476a7;
+    
+}
+/* button span {
+    font-size: 25px;
+    font-weight: 700;
+} */
+

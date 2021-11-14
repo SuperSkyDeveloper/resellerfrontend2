@@ -1,0 +1,125 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.home-main {
+  text-align: center;
+  padding-top:10%;
+  padding-bottom: 3%;
+  background: rgb(28, 42, 39);
+}
+
+.home-main img {
+  border-radius: 10px 10px 10px 10px;
+  box-shadow: 0 4px 8px 0 rgb(245, 239, 239), 0 6px 20px 0 rgb(25, 9, 245);
+}
+
+.form-control label,
+.form-control input,
+.form-control textarea {
+  width: 100%;
+  display: block;
+  height:50px;
+  font-size: 25px;
+  text-align: center;
+}
+
+.form-control input {
+  background-color: rgb(7, 45, 77);
+  border: 1px solid #efecf3;
+  border-radius: 25px;
+  text-align: center;
+  color:white;
+}
+
+.form-control label {
+  margin-bottom: 0.5rem;
+  height:30px;
+  color:cornsilk;
+}
+
+.form-control {
+  margin-bottom: 1rem;
+  background:rgba(255, 99, 71, 0) !important;
+  border: 1px solid #efecf300 !important;
+  padding: 4px 0 !important;
+}
+
+.form-actions button,
+.btn {
+  background: #5101d1 !important;
+  font: inherit !important;
+  border: 1px solid #efecf3 !important;
+  border-radius: 25px !important;
+  padding: 0.25rem auto;
+  /* margin-right: 1rem; */
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.26);
+  color: white !important;
+  cursor: pointer !important;
+  height: 50px;
+  width:100%;
+  margin-top: 3rem;
+}
+
+.form-actions button:hover,
+.form-actions button:active,
+.btn:hover,
+.btn:active {
+  background: #6219d6;
+  border-color: #6219d6;
+}
+
+.page-item.active .page-link {
+  background: #5101d1 !important;
+}
+
+.auth-form {
+  padding:10px;
+}
+
+.MuiFormControlLabel-label {
+  color:white;
+}
+
+.MuiPaper-rounded {
+  padding: 0 25px;
+}
+
+.admin-table .MuiPaper-rounded {
+  background-color: transparent !important;
+}
+
+.reseller-list-table .MuiPaper-rounded {
+  background-color: rgb(1 16 12) !important;
+  padding: 25px 25px;
+}
+
+.reseller-list-table th,
+.reseller-list-table td {
+  color:white;
+}
+
+.reseller-list-table .MuiTablePagination-root {
+  color:white;
+}
+
+.MuiTable-root {
+  min-width:10px !important;
+}
+
+
+@media (max-width: 450px) {
+  .auth-form {
+    padding:15px !important;
+  }
+}
