@@ -11,6 +11,7 @@ import Modal from '../../components/Modal/Modal';
 // import { resellerData } from '../data';
 import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Spinner from '../../components/Spinner/Spinner';
 
 const usingurl = url.local;
 
@@ -21,6 +22,7 @@ class Reseller extends Component {
         users: [],
         creating: false,
         credits: [],
+        isLoading:false,
       };
 
     static contextType = Context;
@@ -134,6 +136,7 @@ class Reseller extends Component {
         this.setState({creating:true});
     }
     createUser = () =>{
+        this.setState({ isLoading: true }); 
         const username = this.usernameElRef.current.value;
         const password = this.passwordElRef.current.value;
         const email = this.emailElRef.current.value;
@@ -148,10 +151,12 @@ class Reseller extends Component {
 
         if (username.trim().length === 0 || password.trim().length === 0 || email.trim().length === 0 ||  period <= 0 || devices <= 0) {
             this.onToast("failed", "Please fill all the fields correctly")
+            this.setState({ isLoading: false }); 
             return;
         }
         if(this.state.credits< +period*+devices){
             this.onToast("failed", "Not enough credits, please buy more credits.")
+            this.setState({ isLoading: false }); 
             return; 
         }
 
@@ -190,17 +195,20 @@ class Reseller extends Component {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                throw new Error('Failed!');
+                    this.setState({ isLoading: false }); 
+                    throw new Error('Failed!');
                 }
                 return res.json();
             })
             .then(resData => {
                 if(resData.data.createUser.devices === -1){
                     this.onToast("failed", "User already exist");
+                    this.setState({ isLoading: false }); 
                     return;
                 }
                 if(resData.data.createUser.devices === -2){
                     this.onToast("failed", "Email already exist");
+                    this.setState({ isLoading: false }); 
                     return;
                 }
                 // this.setState(prevState => {
@@ -218,6 +226,7 @@ class Reseller extends Component {
                 // return { users: updatedUsers };
                 // });
                 this.onToast("success", "User created successfully!");
+                this.setState({ isLoading: false }); 
                 this.fetchCredits();
                 this.fetchUsers();
             })
@@ -278,8 +287,8 @@ class Reseller extends Component {
             {this.state.creating && (
             <Modal
             title="Create User"
-            canCancel
-            canConfirm
+            canCancel = {!this.state.isLoading}
+            canConfirm = {!this.state.isLoading}
             onCancel={this.cancelCreateUser}
             onConfirm={this.createUser}
             confirmText = "Create User"
@@ -305,9 +314,11 @@ class Reseller extends Component {
                     <label htmlFor="devices">Devices</label>
                     <input type="number" id="devices" ref={this.devicesElRef} />
                 </div>
+                {this.state.isLoading &&<Spinner />}
                 </form>
             </Modal>)}
             <div className="reseller-body">
+
                 <div className="reseller-body-header">
                     <div className="reseller-header-left">
                         <label className="credits-label">Credits:</label>

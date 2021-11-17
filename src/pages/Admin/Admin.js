@@ -10,6 +10,7 @@ import {url} from '../../url';
 
 import './Admin.css';
 import  Modal  from '../../components/Modal/Modal';
+import Spinner from '../../components/Spinner/Spinner';
 const usingurl = url.local;
 class Admin extends Component {
 
@@ -28,7 +29,8 @@ class Admin extends Component {
       resellers:[],
       resellerCredits: 100000,
       resellerName: "All Users",
-      addingCredits: false
+      addingCredits: false,
+      isLoading: false,
     };
   }
 
@@ -47,11 +49,13 @@ class Admin extends Component {
 
   addCredits = event =>{
     event.preventDefault();
+    this.setState({isLoading:true});
     const resellerName = this.state.resellerName;
     const credits = +this.creditsElRef.current.value;
   
     if (!credits|| credits<=0) {
       this.onToast("failed", "Please fill the form correctly");
+      this.setState({isLoading: false});
       return;
     } 
   
@@ -90,10 +94,12 @@ class Admin extends Component {
       // this.fetchCredits();
       this.setState({resellerCredits:resData.data.addCredits.credits});
       this.onToast("success", "Credits added Successfully");
+      this.setState({isLoading:false});
       this.setState({addingCredits:false});     
     })
     .catch(err => {
       this.onToast("failed", "Something went wrong");
+      this.setState({isLoading:false});
       this.setState({creating:false});
     });
     
@@ -222,6 +228,7 @@ cancelAddingCredits = () =>{
 createReseller = event =>{
   // this.setState({creating:false});
   event.preventDefault();
+  this.setState({isLoading: true});
   const username = this.usernameElRef.current.value;
   const password = this.passwordElRef.current.value;
   const credits = +this.creditsElRef.current.value;
@@ -229,6 +236,7 @@ createReseller = event =>{
 
 
   if (username.trim().length === 0 || password.trim().length === 0 || credits<=0) {
+    this.setState({isLoading: false});
     this.onToast("failed", "Please fill all the forms");
     return;
   } 
@@ -271,9 +279,11 @@ createReseller = event =>{
     
     // console.log(resData);
     if(resData.data.createReseller.credits<0){
+      this.setState({isLoading: false});
       this.onToast("failed", "User already exist");
       return;
     }
+    this.setState({isLoading: false});
     this.onToast("success", "Created Successfully");
     // this.setState(prevState => {
     //   const updatedResellers = [...prevState.resellers];
@@ -398,8 +408,8 @@ fetchCredits = token => {
             {this.state.creating && (
             <Modal
             title="Create Reseller"
-            canCancel 
-            canConfirm
+            canCancel = {!this.state.isLoading}
+            canConfirm = {!this.state.isLoading}
             onCancel={this.cancelCreateReseller}
             onConfirm={this.createReseller}
             confirmText = "Create Reseller"
@@ -417,13 +427,15 @@ fetchCredits = token => {
                     <label htmlFor="price">Credits</label>
                     <input type="number" id="credits" ref={this.creditsElRef} />
                 </div>
+                {this.state.isLoading &&<Spinner />}
                 </form>
             </Modal>)}
+            {this.state.addingCredits && <Backdrop />}
             {this.state.addingCredits && (
             <Modal
             title="Add credits"
-            canCancel 
-            canConfirm
+            canCancel = {!this.state.isLoading}
+            canConfirm = {!this.state.isLoading}
             onCancel={this.cancelAddingCredits}
             onConfirm={this.addCredits}
             confirmText = "Add Credits"
@@ -433,6 +445,7 @@ fetchCredits = token => {
                     <label htmlFor="price">Credits</label>
                     <input type="number" id="credits" ref={this.creditsElRef} />
                 </div>
+                {this.state.isLoading &&<Spinner />}
                 </form>
             </Modal>)}
             <div className="admin-body">

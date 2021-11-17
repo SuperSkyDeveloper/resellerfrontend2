@@ -68,7 +68,7 @@ code {
   cursor: pointer !important;
   height: 50px;
   width:100%;
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 .form-actions button:hover,
@@ -121,5 +121,22 @@ code {
 @media (max-width: 450px) {
   .auth-form {
     padding:15px !important;
+  }
+  .form-control {
+    margin:0;
+    padding: 2px 0 !important;
+  }
+  .form-control label {
+    font-size:20px;
+    height:25px;
+  }
+  .form-control input {
+    height:40px;
+  }
+  
+}
+@media (max-width: 320px) {
+  .modal {
+    top: 0 !important;;
   }
 }

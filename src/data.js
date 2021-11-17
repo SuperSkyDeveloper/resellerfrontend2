@@ -1,26 +1,26 @@
 export const pricingTableData = [
     {   
         id: 1,
-        price: 1,
-        credits: 75,
+        price: 150,
+        credits: 30,
     },
     
     {   
         id: 2,
-        price: 580,
-        credits: 150,
+        price: 200,
+        credits: 40,
     },
 
     {   
         id: 3,
-        price: 850,
-        credits: 225,
+        price: 300,
+        credits: 60,
     },
 
     {   
         id: 4,
-        price: 1330,
-        credits: 150,
+        price: 350,
+        credits: 70,
     },
     
 ];

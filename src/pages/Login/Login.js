@@ -5,10 +5,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import {url} from '../../url';
 
 import './Login.css';
+import Spinner from '../../components/Spinner/Spinner';
 
 const usingurl = url.local;
 
 class Login extends Component {
+
+  state = {
+    isLoading: false
+  }
 
   static  contextType = Context;
 
@@ -32,12 +37,14 @@ class Login extends Component {
   }
 
   submitHandler = event =>{
+    this.setState({ isLoading: true });
     event.preventDefault();
     const username = this.usernameEl.current.value;
     const password = this.passwordEl.current.value;
 
     if (username.trim().length === 0 || password.trim().length === 0) {
       this.onToast("failed", "Please fill all the forms");
+      this.setState({ isLoading: false });
       return;
     }
     const requestBody = {
@@ -63,6 +70,7 @@ class Login extends Component {
     })
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
+          this.setState({ isLoading: false });
           throw new Error('Failed!');
         }
         return res.json();
@@ -70,9 +78,11 @@ class Login extends Component {
       .then(resData => {
         if(resData.data.login.resellerId === "1") {
           this.onToast("failed", "User does not exist");
+          this.setState({ isLoading: false });
           return;
         }
         if(resData.data.login.resellerId === "2") {
+          this.setState({ isLoading: false });
           this.onToast("failed", "Incorrect password");
           return;
         }
@@ -89,12 +99,14 @@ class Login extends Component {
           localStorage.setItem("username", username);
           // localStorage.setItem("credits", resData.data.login.credits);
           // const datafromstore = localStorage.getItem('token');
-          // console.log("localstorage userID in login.js", datafromstore); 
+          // console.log("localstorage userID in login.js", datafromstore);
+          this.setState({ isLoading: false }); 
         }
       })
       .catch(err => {
         console.log(err);
         this.onToast("failed", "Something went wrong");
+        this.setState({ isLoading: false });
       });
   };
   render() {
@@ -112,7 +124,7 @@ class Login extends Component {
             <input type="password" id="password" ref={this.passwordEl} placeholder="Enter Your Password" />
           </div>
           <div className="form-actions">
-            <button type="submit">Login</button>
+          {(this.state.isLoading)&& <Spinner />}{(!this.state.isLoading) && <button type="submit">Login</button>}
           </div>
       </form>
     </div>
