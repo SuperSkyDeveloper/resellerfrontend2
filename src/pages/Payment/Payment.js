@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { ToastContainer, toast} from 'react-toastify';
 import AuthContext from '../../components/Context/Context';
 import {Redirect} from 'react-router-dom';
-import {url} from '../../url';
+import {Data} from '../../data';
 import './Payment.css'
 
-const usingurl = url.local;
+const usingurl = Data.alterData.using.url;
 
 class Payment extends Component {
     static contextType = AuthContext;

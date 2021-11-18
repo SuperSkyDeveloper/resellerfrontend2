@@ -1,10 +1,12 @@
+//Stripe integration
 import React, { Component } from 'react';
 import StripeCheckout from "react-stripe-checkout";
 import { ToastContainer, toast} from 'react-toastify';
 import AuthContext from '../../components/Context/Context';
-import {url} from '../../url';
+import {Data} from '../../data';
 import './Payment.css'
-const usingurl = url.local;
+
+const usingurl = Data.alterData.using.url;
 
 class Payment extends Component {
     static contextType = AuthContext;

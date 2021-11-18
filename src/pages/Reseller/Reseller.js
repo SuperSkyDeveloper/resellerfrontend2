@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {url} from '../../url';
+import {Data} from '../../data';
 import ResellerTable from '../../components/Tables/ResellerTable'
 
 import './Reseller.css';
@@ -13,7 +13,7 @@ import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from '../../components/Spinner/Spinner';
 
-const usingurl = url.local;
+const usingurl = Data.alterData.using.url;
 
 class Reseller extends Component {
     

@@ -3,7 +3,7 @@ import ProductCard from './ProductCard';
 import './Shop.css';
 //Importing bootstrap and other modules
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { pricingTableData } from '../../data'
+import  { Data }  from '../../data'
 import { Link } from 'react-router-dom';
 import AuthContext from '../../components/Context/Context';
 
@@ -11,7 +11,7 @@ class Shop extends React.Component {
   static contextType = AuthContext;
   render() {
       
-   const data = pricingTableData;
+   const data = Data.pricingTable;
     return (
      
       <div className="maincontainer">

@@ -13,6 +13,7 @@ import Reseller from './pages/Reseller/Reseller';
 import Admin from './pages/Admin/Admin';
 import Shop from './pages/Shop/Shop';
 import Payment from './pages/Payment/Payment';
+import { Data } from './data';
 
 // const token = localStorage.getItem('token');
 // const resellerId = localStorage.getItem('resellerId');
@@ -51,7 +52,7 @@ class App extends Component {
   
 
   render() {
-    // console.log(localStorage.getItem('username'));
+    const adminId = Data.alterData.using.adminId;
     return (
       <BrowserRouter>
         <React.Fragment>
@@ -70,7 +71,7 @@ class App extends Component {
                 <Redirect from="/login" to="/account" exact />
               )}
                {this.state.token && (
-                 (this.state.resellerId === "616c5a56d4b61b864bfc72c7")? <Route path="/account" component={Admin} />:<Route path="/account" component={Reseller}/>
+                 (this.state.resellerId === adminId)? <Route path="/account" component={Admin} />:<Route path="/account" component={Reseller}/>
               )} 
               {/* <Route path="/account" component={Account} /> */}
               {!this.state.token && (

@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import Context from '../../components/Context/Context';
 import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {url} from '../../url';
-
+import {Data} from '../../data';
 import './Login.css';
 import Spinner from '../../components/Spinner/Spinner';
 
-const usingurl = url.local;
+const usingurl = Data.alterData.using.url;
 
 class Login extends Component {
 
@@ -47,6 +46,7 @@ class Login extends Component {
       this.setState({ isLoading: false });
       return;
     }
+
     const requestBody = {
       query:`
         query Login($username: String!, $password: String!) {
@@ -61,6 +61,7 @@ class Login extends Component {
         password: password
       }
     };
+
     fetch(usingurl, {
       method: 'POST',
       body: JSON.stringify(requestBody),
@@ -97,9 +98,6 @@ class Login extends Component {
           localStorage.setItem("token", resData.data.login.token);
           localStorage.setItem("resellerId", resData.data.login.resellerId);
           localStorage.setItem("username", username);
-          // localStorage.setItem("credits", resData.data.login.credits);
-          // const datafromstore = localStorage.getItem('token');
-          // console.log("localstorage userID in login.js", datafromstore);
           this.setState({ isLoading: false }); 
         }
       })

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import paypal from 'paypal-checkout';
 import Context from '../../components/Context/Context';
-import {url} from '../../url';
+import {Data} from '../../data';
 
-const usingurl = url.local;
+const usingurl = Data.alterData.using.url;
+const paymentway = Data.alterData.using.payment;
 
 
 class PaypalCheckoutButton extends Component {
@@ -13,7 +14,7 @@ class PaypalCheckoutButton extends Component {
         order: this.props.order,
         paypalConf : { 
             currency: 'USD',
-            env: 'production',
+            env: paymentway,
             client: {
               sandbox: "AQcqg9ychDyLm6y2VXfkrE828zPKMlmMQa6HpGHev3hT3Xv9cKeNAHc1DeKOoM8ex1-ZiDz4bMN1fCJ4",
               production: 'AanMNFhHMoDyd0CYaBOvj4MvE8i9QaduZ1vprpZpgceiakgjo3-AjPHaiL6X0HynLgVDhFg2V7uv4wbL',

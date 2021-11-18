@@ -188,7 +188,7 @@ class ToolbarComponent extends React.Component {
               <NavLink to="/" className={classes.link}><span className="logo">Strstream Reseller Panel</span></NavLink>
             </Typography> */}
             <Typography >
-              <NavLink to="/" className={classes.link}><span className="logo">Reseller Panel</span></NavLink>
+              <NavLink to="/" className={classes.link}><span className="logo">Activation Panel</span></NavLink>
             </Typography>
         {/* search */}
             {/* <div className={classes.search}>

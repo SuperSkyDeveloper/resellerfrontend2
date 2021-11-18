@@ -71,7 +71,7 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'username', numeric: false, disablePadding: true, label: 'Username' },
+  { id: 'username', numeric: false, disablePadding: true, label: 'ResellerName' },
   { id: 'credits', numeric: true, disablePadding: false, label: 'Credits' },
 //   { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
 //   { id: 'startDate', numeric: true, disablePadding: false, label: 'Start Date' },

@@ -6,19 +6,19 @@ import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ResellerTable from '../../components/Tables/ResellerTable'
 import AdminTable from '../../components/Tables/AdminTable'
-import {url} from '../../url';
-
+import {Data} from '../../data';
 import './Admin.css';
 import  Modal  from '../../components/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
-const usingurl = url.local;
+
+const usingurl = Data.alterData.using.url;
+
 class Admin extends Component {
 
   isActive = true;
   static contextType = AuthContext;
 
   constructor(props) {
-    // console.log("constructor executed");
     super(props);
     this.usernameElRef = React.createRef();
     this.passwordElRef = React.createRef();
@@ -84,14 +84,12 @@ class Admin extends Component {
       }
     })
     .then(res => {
-      // console.log("res", res);
       if (res.status !== 200 && res.status !== 201) {
         throw new Error('Failed!');
       }
       return res.json();
     })
     .then(resData => {
-      // this.fetchCredits();
       this.setState({resellerCredits:resData.data.addCredits.credits});
       this.onToast("success", "Credits added Successfully");
       this.setState({isLoading:false});
@@ -103,11 +101,9 @@ class Admin extends Component {
       this.setState({creating:false});
     });
     
-    };
-  
+  };  
 
   fetchUsers = token => {
-    // console.log("token", token);
     const requestBody = {
         query: `
             query {
@@ -132,7 +128,6 @@ class Admin extends Component {
       this.fetchCredits(token);
       newToken = token;
     }
-    // console.log("newToken", newToken);
     fetch(usingurl, {
         method: 'POST',
         body: JSON.stringify(requestBody),
@@ -155,8 +150,8 @@ class Admin extends Component {
     .catch(err => {
         console.log(err);
         this.setState({ isLoading: false });
-    });
-}
+    }); 
+  }
   
   fetchResellers() {
     const requestBody = {
@@ -171,6 +166,7 @@ class Admin extends Component {
         }
       `
     };
+
     const token = this.context.token;
 
     fetch(usingurl, {
@@ -180,240 +176,166 @@ class Admin extends Component {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token
     }
-  })
-  .then(res => {
-    if (res.status !== 200 && res.status !== 201) {
-      throw new Error('Failed!');
-    }
-    return res.json();
-  })
-  .then(resData => {
-    const resellers = resData.data.resellers;
-    if (this.isActive) {
-      this.setState({ resellers: resellers });
-    }
-  })
-  .catch(err => {
-    console.log(err);
-    // if (this.isActive) {
-    //   this.setState({ isLoading: false });
-    // }
-  });
+    })
+    .then(res => {
+      if (res.status !== 200 && res.status !== 201) {
+        throw new Error('Failed!');
+      }
+      return res.json();
+    })
+    .then(resData => {
+      const resellers = resData.data.resellers;
+      if (this.isActive) {
+        this.setState({ resellers: resellers });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
  
-componentDidMount() {
-  this.fetchResellers();
-  this.fetchUsers();
-}
-
-startCreateReseller = () =>{
-    this.setState({creating:true});
-}
-startAddingCredits = () => {
-  if(this.state.resellerName === "All Users") {
-    this.onToast("failed", "Please select one of your resellers")
-    return;
+  componentDidMount() {
+    this.fetchResellers();
+    this.fetchUsers();
   }
-  this.setState({addingCredits:true});
-}
 
-cancelCreateReseller = () =>{
-    this.setState({creating:false});
-}
-
-cancelAddingCredits = () =>{
-  this.setState({addingCredits:false});
-}
-
-createReseller = event =>{
-  // this.setState({creating:false});
-  event.preventDefault();
-  this.setState({isLoading: true});
-  const username = this.usernameElRef.current.value;
-  const password = this.passwordElRef.current.value;
-  const credits = +this.creditsElRef.current.value;
-
-
-
-  if (username.trim().length === 0 || password.trim().length === 0 || credits<=0) {
-    this.setState({isLoading: false});
-    this.onToast("failed", "Please fill all the forms");
-    return;
-  } 
-
-  let requestBody = {
-    query: `
-      mutation CreateReseller($username: String!, $password: String!, $credits: Float!) {
-        createReseller(resellerInput: {username: $username, password: $password, credits: $credits}) {
-          _id
-          username
-          credits
-          token
-        }
-      }
-    `,
-    variables: {
-      username: username,
-      password: password,
-      credits: credits
-    }
-  };
-
-  const token = this.context.token;
-
-  fetch(usingurl, {
-    method: 'POST',
-    body: JSON.stringify(requestBody),
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token
-    }
-  })
-  .then(res => {
-    if (res.status !== 200 && res.status !== 201) {
-      throw new Error('Failed!');
-    }
-    return res.json();
-  })
-  .then(resData => {
-    
-    // console.log(resData);
-    if(resData.data.createReseller.credits<0){
-      this.setState({isLoading: false});
-      this.onToast("failed", "User already exist");
+  startCreateReseller = () =>{
+      this.setState({creating:true});
+  }
+  startAddingCredits = () => {
+    if(this.state.resellerName === "All Users") {
+      this.onToast("failed", "Please select one of your resellers")
       return;
     }
-    this.setState({isLoading: false});
-    this.onToast("success", "Created Successfully");
-    // this.setState(prevState => {
-    //   const updatedResellers = [...prevState.resellers];
-    //   updatedResellers.push({
-    //     _id: resData.data.createReseller._id,
-    //     username: resData.data.createReseller.username,
-    //     credits: resData.data.createReseller.credits
-    //   });
-    //   this.setState({creating:false});
-      
-    //   return {resellers: updatedResellers};
-    // });
-    this.fetchResellers();
-    this.setState({creating:false});
+    this.setState({addingCredits:true});
+  }
 
-    
-  })
-  .catch(err => {
-    this.onToast("failed", "Something went wrong");
-    this.setState({creating:false});
-  });
+  cancelCreateReseller = () =>{
+      this.setState({creating:false});
+  }
 
-};
+  cancelAddingCredits = () =>{
+    this.setState({addingCredits:false});
+  }
 
-fetchCredits = token => {
-  // console.log("Started fetch Credits", token);
-  const requestBody = {
+  createReseller = event =>{
+    event.preventDefault();
+    this.setState({isLoading: true});
+    const username = this.usernameElRef.current.value;
+    const password = this.passwordElRef.current.value;
+    const credits = +this.creditsElRef.current.value;
+
+    if (username.trim().length === 0 || password.trim().length === 0 || credits<=0) {
+      this.setState({isLoading: false});
+      this.onToast("failed", "Please fill all the forms");
+      return;
+    } 
+
+    let requestBody = {
       query: `
-      query {
-          getCredits {
-              credits
-              username
+        mutation CreateReseller($username: String!, $password: String!, $credits: Float!) {
+          createReseller(resellerInput: {username: $username, password: $password, credits: $credits}) {
+            _id
+            username
+            credits
+            token
           }
-      }           
-      `
-  };
-  fetch(usingurl, {
-       method: 'POST',
-       body: JSON.stringify(requestBody),
-       headers: {
-           'Content-Type': 'application/json',
-           Authorization: 'Bearer ' + token
-       }
-   })
-   .then(res => {
-       if (res.status !== 200 && res.status !== 201) {
-       throw new Error('Failed!');
-       }
-       return res.json();
-   })
-   .then(resData => {
-       // console.log("redData", resData.data.getCredits.credits);
-       const credits = resData.data.getCredits.credits;
-       const username = resData.data.getCredits.username; 
-       this.setState({ resellerCredits: credits, resellerName: username });
-   })
-   .catch(err => {
-       console.log(err);
-       this.setState({ isLoading: false });
-   });
-}
+        }
+      `,
+      variables: {
+        username: username,
+        password: password,
+        credits: credits
+      }
+    };
 
-    componentWillUnmount() {
-      this.isActive = false;
-    }
-    render() {
-      // console.log("addingCredits", this.state.addingCredits);
-        // const resellerData = {
-        //     columns:[
-        //         // {
-        //         //     label: 'No',
-        //         //     field: `${index}`,
-        //         //     sort: 'asc',
-        //         //     width: 150
-        //         // },
-        //         {
-        //           label: 'Username',
-        //           field: 'username',
-        //           sort: 'asc',
-        //           width: 150
-        //       },
-        //         {
-        //             label: 'Password',
-        //             field: 'password',
-        //             sort: 'asc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'Email',
-        //             field: 'email',
-        //             sort: 'asc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'Start Date',
-        //             field: 'startDate',
-        //             sort: 'asc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'End Date',
-        //             field: 'endDate',
-        //             sort: 'asc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'Devices',
-        //             field: 'devices',
-        //             sort: 'asc',
-        //             width: 150
-        //         },
-        //     ],
-        //     rows: this.state.users
-        // };
-        // const datafromstore = localStorage.getItem('token');
-        // console.log("localstorage userID in login.js", datafromstore); 
-        // console.log("admin data", this.state.resellers);
-        return (
-            <React.Fragment>
-              <ToastContainer />
+    const token = this.context.token;
+
+    fetch(usingurl, {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+      }
+    })
+    .then(res => {
+      if (res.status !== 200 && res.status !== 201) {
+        throw new Error('Failed!');
+      }
+      return res.json();
+    })
+    .then(resData => {
+      if(resData.data.createReseller.credits<0){
+        this.setState({isLoading: false});
+        this.onToast("failed", "User already exist");
+        return;
+      }
+      this.setState({isLoading: false});
+      this.onToast("success", "Created Successfully");
+      this.fetchResellers();
+      this.setState({creating:false});    
+    })
+    .catch(err => {
+      this.onToast("failed", "Something went wrong");
+      this.setState({creating:false});
+    });
+
+  };
+
+  fetchCredits = token => {
+    const requestBody = {
+        query: `
+        query {
+            getCredits {
+                credits
+                username
+            }
+        }         
+        `
+    };
+    fetch(usingurl, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+        }
+    })
+    .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+        throw new Error('Failed!');
+        }
+        return res.json();
+    })
+    .then(resData => {
+        const credits = resData.data.getCredits.credits;
+        const username = resData.data.getCredits.username; 
+        this.setState({ resellerCredits: credits, resellerName: username });
+    })
+    .catch(err => {
+        console.log(err);
+        this.setState({ isLoading: false });
+    });
+  }
+
+  componentWillUnmount() {
+    this.isActive = false;
+  }
+  render() {
+      return (
+          <React.Fragment>
+            <ToastContainer />
             {this.state.creating && <Backdrop />}
             {this.state.creating && (
-            <Modal
-            title="Create Reseller"
-            canCancel = {!this.state.isLoading}
-            canConfirm = {!this.state.isLoading}
-            onCancel={this.cancelCreateReseller}
-            onConfirm={this.createReseller}
-            confirmText = "Create Reseller"
-            >
+              <Modal
+              title="Create Reseller"
+              canCancel = {!this.state.isLoading}
+              canConfirm = {!this.state.isLoading}
+              onCancel={this.cancelCreateReseller}
+              onConfirm={this.createReseller}
+              confirmText = "Create Reseller"
+              >
                 <form>
                 <div className="form-control">
                     <label htmlFor="title">Username</label>
@@ -429,59 +351,58 @@ fetchCredits = token => {
                 </div>
                 {this.state.isLoading &&<Spinner />}
                 </form>
-            </Modal>)}
+              </Modal>
+            )}
             {this.state.addingCredits && <Backdrop />}
             {this.state.addingCredits && (
-            <Modal
-            title="Add credits"
-            canCancel = {!this.state.isLoading}
-            canConfirm = {!this.state.isLoading}
-            onCancel={this.cancelAddingCredits}
-            onConfirm={this.addCredits}
-            confirmText = "Add Credits"
-            >
-                <form>
-                <div className="form-control">
-                    <label htmlFor="price">Credits</label>
-                    <input type="number" id="credits" ref={this.creditsElRef} />
-                </div>
-                {this.state.isLoading &&<Spinner />}
-                </form>
-            </Modal>)}
+              <Modal
+              title="Add credits"
+              canCancel = {!this.state.isLoading}
+              canConfirm = {!this.state.isLoading}
+              onCancel={this.cancelAddingCredits}
+              onConfirm={this.addCredits}
+              confirmText = "Add Credits"
+              >
+                  <form>
+                  <div className="form-control">
+                      <label htmlFor="price">Credits</label>
+                      <input type="number" id="credits" ref={this.creditsElRef} />
+                  </div>
+                  {this.state.isLoading &&<Spinner />}
+                  </form>
+              </Modal>
+            )}
             <div className="admin-body">
-                <div className="admin-body-header">
-                  <div className="create-account">
-                      <button className="btn" onClick={this.startCreateReseller}>Add Reseller</button>
-                  </div>
-                  <div className="add-credits">
-                    <button className="btn" onClick={this.startAddingCredits}>Add credits</button>
-                  </div>
+              <div className="admin-body-header">
+                <div className="create-account">
+                    <button className="btn" onClick={this.startCreateReseller}>Add Reseller</button>
                 </div>
-                <div className="admin-body-main">
-                  <div className ="reseller-list-table">
-                  {/* <ResellerList resellers={this.state.resellers} getUsers={this.fetchUsers} getCredits = {this.fetchCredits}/> */}
-                    <AdminTable data = {this.state.resellers} getUsers={this.fetchUsers} getCredits = {this.fetchCredits}/>
-                  </div>
-                  <div className="admin-table">
-                    
-                    <div className="table-header">                      
-                      <div className="table-header-element">
-                        <label>Credits: </label>
-                        <h2>{this.state.resellerCredits}</h2>
-                      </div>
-                      <div className="table-header-element">
-                        <h2>{this.state.resellerName}</h2>
-                      </div>
-                     
+                <div className="add-credits">
+                  <button className="btn" onClick={this.startAddingCredits}>Add credits</button>
+                </div>
+              </div>
+              <div className="admin-body-main">
+                <div className ="reseller-list-table">
+                  <AdminTable data = {this.state.resellers} getUsers={this.fetchUsers} getCredits = {this.fetchCredits}/>
+                </div>
+                <div className="admin-table">                  
+                  <div className="table-header">                      
+                    <div className="table-header-element">
+                      <label>Credits: </label>
+                      <h2>{this.state.resellerCredits}</h2>
                     </div>
-                    <ResellerTable data = {this.state.users}
-                    />
+                    <div className="table-header-element">
+                      <h2>{this.state.resellerName}</h2>
+                    </div>                    
                   </div>
+                  <ResellerTable data = {this.state.users}
+                  />
                 </div>
+              </div>
             </div>
-            </React.Fragment>
-        );
-    }
+          </React.Fragment>
+      );
+  }
 }
 
 export default Admin;
