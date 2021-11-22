@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation';
 import Homepage from './pages/Homepage';
+import Contact from './pages/Contact/Contact';
 import AuthContext from './components/Context/Context';
 
 import './App.css';
@@ -90,6 +91,7 @@ class App extends Component {
               <Route path="/home" component={Homepage} /> 
               <Route path="/shop" component={Shop} /> 
               <Redirect from="/" to="/home" exact /> 
+              <Route path="/contact" component={Contact} /> 
                          
             </Switch>
           </main>

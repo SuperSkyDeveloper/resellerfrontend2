@@ -13,35 +13,13 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-// import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-// import {data} from './data';
 
-
-// function createData(name, calories, fat, carbs, protein) {
-//   return { name, calories, fat, carbs, protein };
-// }
-
-// const rows1 = [
-//   createData('Cupcake', 305, 3.7, 67, 4.3),
-//   createData('Donut', 452, 25.0, 51, 4.9),
-//   createData('Eclair', 262, 16.0, 24, 6.0),
-//   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-//   createData('Gingerbread', 356, 16.0, 49, 3.9),
-//   createData('Honeycomb', 408, 3.2, 87, 6.5),
-//   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-//   createData('Jelly Bean', 375, 0.0, 94, 0.0),
-//   createData('KitKat', 518, 26.0, 65, 7.0),
-//   createData('Lollipop', 392, 0.2, 98, 0.0),
-//   createData('Marshmallow', 318, 0, 81, 2.0),
-//   createData('Nougat', 360, 19.0, 9, 37.0),
-//   createData('Oreo', 437, 18.0, 63, 4.0),
-// ];
 
 
 function descendingComparator(a, b, orderBy) {
@@ -71,12 +49,11 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'username', numeric: false, disablePadding: true, label: 'SellerName' },
+    
+  { id: '_id', numeric: false, disablePadding: true, label: 'PaymentID' },
   { id: 'credits', numeric: true, disablePadding: false, label: 'Credits' },
-//   { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-//   { id: 'startDate', numeric: true, disablePadding: false, label: 'Start Date' },
-//   { id: 'endDate', numeric: true, disablePadding: false, label: 'End Date' },
-//   { id: 'devices', numeric: true, disablePadding: false, label: 'Devices' },
+  { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
+  { id: 'createdAt', numeric: true, disablePadding: false, label: 'Date' },
 ];
 
 function EnhancedTableHead(props) {
@@ -217,7 +194,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable(props) {
+export default function PaymentTable(props) {
   const rows = props.data;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -323,13 +300,11 @@ export default function EnhancedTable(props) {
                         />
                       </TableCell> */}
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        <button className="table-button" onClick={() => props.getUsers(row.token)}>{row.username}</button>
+                        {row._id}
                       </TableCell>
                       <TableCell align="right">{row.credits}</TableCell>
-                      {/* <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.startDate}</TableCell>
-                      <TableCell align="right">{row.endDate}</TableCell>
-                      <TableCell align="right">{row.devices}</TableCell> */}
+                      <TableCell align="right">{row.price} $</TableCell>
+                      <TableCell align="right">{row.createdAt}</TableCell>
                     </TableRow>
                   );
                 })}

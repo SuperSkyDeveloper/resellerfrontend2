@@ -9,7 +9,8 @@ import {
   Divider
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+import MailIcon from "@material-ui/icons/ContactMail";
+import ShopIcon from "@material-ui/icons/Shop";
 import HouseIcon from '@material-ui/icons/House';
 import SwitchAccountIcon from '@material-ui/icons/AccountBox';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
@@ -68,7 +69,12 @@ class DrawerComponent extends React.Component {
               </List>
               <List>
                   <NavLink to="/shop" className={classes.link}>
-                    <HouseIcon style={{ fontSize: 35 }}/> <span className="menu-item">Shop</span>
+                    <ShopIcon style={{ fontSize: 35 }}/> <span className="menu-item">Shop</span>
+                  </NavLink>
+              </List>
+              <List>
+                  <NavLink to="/contact" className={classes.link}>
+                    <MailIcon style={{ fontSize: 35 }}/> <span className="menu-item">Contact Us</span>
                   </NavLink>
               </List>
               <List>

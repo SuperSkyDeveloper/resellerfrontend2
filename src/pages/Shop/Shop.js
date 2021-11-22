@@ -21,7 +21,7 @@ class Shop extends React.Component {
               <div class="row">
                 <div class="col-lg-8 mx-auto">
                   <h1>Please select one of the table to buy credits!</h1>
-                  <p>Easily make money as reseller.<br /> <h1>RESELLER PANEL</h1></p>
+                  <p>Easily make money as seller.<br /> <h1>SELLER PANEL</h1></p>
                 </div>
               </div>
             </header>

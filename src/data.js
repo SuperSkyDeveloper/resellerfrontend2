@@ -2,7 +2,7 @@ export const Data = {
     pricingTable:[
         {   
             id: 1,
-            price: 150,
+            price: 1,
             credits: 30,
         },
         
@@ -25,12 +25,12 @@ export const Data = {
         },
     ],
     alterData: {
-        other: {
+        using: {
             adminId:"6195c3427f82ab43b9e571ed",
             url: 'http://localhost:8000/graphql',
             payment:"sandbox",
         },
-        using:{
+        other:{
             adminId:"616c5a56d4b61b864bfc72c7",
             url:'https://resellerpanel.info/api',
             payment:"production",

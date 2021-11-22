@@ -116,6 +116,14 @@ code {
 .MuiTable-root {
   min-width:10px !important;
 }
+ /* table padding */
+ .MuiBox-root {
+  padding:0 !important;
+}
+/* Tab text Color */
+.MuiTab-textColorPrimary {
+  color:white !important;
+}
 
 
 @media (max-width: 450px) {
@@ -133,7 +141,6 @@ code {
   .form-control input {
     height:40px;
   }
-  
 }
 @media (max-width: 320px) {
   .modal {

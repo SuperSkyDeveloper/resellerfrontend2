@@ -8,6 +8,7 @@ import './Reseller.css';
 import Backdrop from '../../components/Backdrop/Backdrop';
 import Context from '../../components/Context/Context';
 import Modal from '../../components/Modal/Modal';
+import TabCom from '../../components/Tab/Tab';
 // import { resellerData } from '../data';
 import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,7 +24,9 @@ class Reseller extends Component {
         creating: false,
         credits: [],
         isLoading:false,
-      };
+        payments: [{_id:"theajfsdf434f$",credits:30, price:150, createdAt:"2021/11/15"},
+                    {_id:"tethew$#FFEF33",credits:30, price:150, createdAt:"2021/11/15"}             ],
+                };
 
     static contextType = Context;
 
@@ -53,7 +56,45 @@ class Reseller extends Component {
     componentDidMount() {
         this.fetchUsers();
         this.fetchCredits();
+        this.fetchPayments();
 
+    }
+
+    fetchPayments = () => {
+        const requestBody = {
+            query: `
+            query {
+                paymentslog {
+                    _id
+                    credits
+                    price
+                    createdAt                    
+                }
+            }           
+            `
+        };
+        fetch(usingurl, {
+             method: 'POST',
+             body: JSON.stringify(requestBody),
+             headers: {
+                 'Content-Type': 'application/json',
+                 Authorization: 'Bearer ' + this.context.token
+             }
+         })
+         .then(res => {
+             if (res.status !== 200 && res.status !== 201) {
+             throw new Error('Failed!');
+             }
+             return res.json();
+         })
+         .then(resData => {
+             const payments = resData.data.paymentslog;
+             this.setState({ payments: payments });
+         })
+         .catch(err => {
+             console.log(err);
+             this.setState({ isLoading: false });
+         });
     }
 
    fetchCredits = () => {
@@ -238,50 +279,8 @@ class Reseller extends Component {
         this.setState({creating:false});
     }
     render() {
-        // const tableData = {
-        //     columns:[
-        //         {
-        //             label: 'Username',
-        //             field: 'username',
-        //             sort: 'dsc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'Password',
-        //             field: 'password',
-        //             // sort: 'asc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'Email',
-        //             field: 'email',
-        //             // sort: 'asc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'Start Date',
-        //             field: 'startDate',
-        //             sort: 'dsc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'End Date',
-        //             field: 'endDate',
-        //             // sort: 'asc',
-        //             width: 150
-        //         },
-        //         {
-        //             label: 'Devices',
-        //             field: 'devices',
-        //             // sort: 'asc',
-        //             width: 150
-        //         },
-        //     ],
-        //     rows: this.state.users
-        // };
         return (
             <React.Fragment>
-                {/* <p>{this.state.users.length > 0 && this.state.users[0].username}</p> */}
             <ToastContainer />
             {this.state.creating && <Backdrop />}
             {this.state.creating && (
@@ -318,7 +317,6 @@ class Reseller extends Component {
                 </form>
             </Modal>)}
             <div className="reseller-body">
-
                 <div className="reseller-body-header">
                     <div className="reseller-header-left">
                         <label className="credits-label">Credits:</label>
@@ -328,11 +326,11 @@ class Reseller extends Component {
                         <button className="btn add-user" onClick={this.startCreateUser}>Add User</button>
                     </div>
                 </div>
-                {/* <div className="reseller-table"> */}
-                <ResellerTable data={this.state.users}/>
-                {/* </div> */}
+                {/* <ResellerTable data={this.state.users}/> */}
+                <TabCom data={this.state.users} payments ={this.state.payments}/>
             </div>
-            </React.Fragment>
+            
+            </React.Fragment >
         );
     }
 }

@@ -30,6 +30,54 @@ class PaypalCheckoutButton extends Component {
 
     static contextType = Context;
 
+    paymentlog = () => {
+      const name = localStorage.getItem('username');
+      const credits = this.state.order.credits;
+      const price = this.state.order.total;
+
+      let requestBody = {
+        query: `
+          mutation Paypal($name: String!, $credits: Float!, $price: Float!) {
+            paypal(paypalInput: {name: $name, credits: $credits, price: $price }) {
+              _id
+              price
+              credits
+              resellerName
+              createdAt
+            }
+          }
+        `,
+        variables: {
+          name: name,
+          credits: credits,
+          price:price
+        }
+      };
+      const token = this.context.token;
+      fetch(usingurl, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then(res => {
+        // console.log("res", res);
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Failed!');
+        }
+        return res.json();
+      })
+      .then(resData => {
+          console.log("resData",resData);     
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    };
+
 
     addCredits = event =>{
         // event.preventDefault();
@@ -111,6 +159,7 @@ class PaypalCheckoutButton extends Component {
             // console.log("respnse",response);
             alert(`Payment Success!`);
             this.addCredits();
+            this.paymentlog();
           })
           .catch(error => {
             console.log(error);
@@ -138,7 +187,7 @@ class PaypalCheckoutButton extends Component {
                 style={this.state.paypalConf.style}
                 commit
                 locale="en_US"
-            />
+            />          
         )
     }
 

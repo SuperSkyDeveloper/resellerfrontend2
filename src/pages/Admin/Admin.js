@@ -10,6 +10,7 @@ import {Data} from '../../data';
 import './Admin.css';
 import  Modal  from '../../components/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
+import TabCom from '../../components/Tab/Tab';
 
 const usingurl = Data.alterData.using.url;
 
@@ -25,12 +26,13 @@ class Admin extends Component {
     this.creditsElRef = React.createRef();
     this.state = {
       users: [],
-      creating: false,
+      payments: [],
       resellers:[],
       resellerCredits: 100000,
-      resellerName: "All Users",
+      resellerName: "Panel Manager",
       addingCredits: false,
       isLoading: false,
+      creating: false,
     };
   }
 
@@ -46,6 +48,43 @@ class Admin extends Component {
         break;
     }
   }
+
+  fetchPayments = token => {
+    const requestBody = {
+        query: `
+        query {
+            paymentslog {
+                _id
+                credits
+                price
+                createdAt                    
+            }
+        }           
+        `
+    };
+    fetch(usingurl, {
+         method: 'POST',
+         body: JSON.stringify(requestBody),
+         headers: {
+             'Content-Type': 'application/json',
+             Authorization: 'Bearer ' + token
+         }
+     })
+     .then(res => {
+         if (res.status !== 200 && res.status !== 201) {
+         throw new Error('Failed!');
+         }
+         return res.json();
+     })
+     .then(resData => {
+         const payments = resData.data.paymentslog;
+         this.setState({ payments: payments });
+     })
+     .catch(err => {
+         console.log(err);
+         this.setState({ isLoading: false });
+     });
+}
 
   addCredits = event =>{
     event.preventDefault();
@@ -125,9 +164,10 @@ class Admin extends Component {
       newToken = this.context.token;
     }
     if(token) {
-      this.fetchCredits(token);
       newToken = token;
     }
+    this.fetchCredits(newToken);
+    this.fetchPayments(newToken);
     fetch(usingurl, {
         method: 'POST',
         body: JSON.stringify(requestBody),
@@ -329,12 +369,12 @@ class Admin extends Component {
             {this.state.creating && <Backdrop />}
             {this.state.creating && (
               <Modal
-              title="Create Reseller"
+              title="Create Seller"
               canCancel = {!this.state.isLoading}
               canConfirm = {!this.state.isLoading}
               onCancel={this.cancelCreateReseller}
               onConfirm={this.createReseller}
-              confirmText = "Create Reseller"
+              confirmText = "Create Sseller"
               >
                 <form>
                 <div className="form-control">
@@ -375,7 +415,7 @@ class Admin extends Component {
             <div className="admin-body">
               <div className="admin-body-header">
                 <div className="create-account">
-                    <button className="btn" onClick={this.startCreateReseller}>Add Reseller</button>
+                    <button className="btn" onClick={this.startCreateReseller}>Add Seller</button>
                 </div>
                 <div className="add-credits">
                   <button className="btn" onClick={this.startAddingCredits}>Add credits</button>
@@ -395,8 +435,8 @@ class Admin extends Component {
                       <h2>{this.state.resellerName}</h2>
                     </div>                    
                   </div>
-                  <ResellerTable data = {this.state.users}
-                  />
+                  {/* <ResellerTable data = {this.state.users}/> */}
+                  <TabCom data={this.state.users} payments ={this.state.payments}/>
                 </div>
               </div>
             </div>
