@@ -374,7 +374,7 @@ class Admin extends Component {
               canConfirm = {!this.state.isLoading}
               onCancel={this.cancelCreateReseller}
               onConfirm={this.createReseller}
-              confirmText = "Create Sseller"
+              confirmText = "Create Seller"
               >
                 <form>
                 <div className="form-control">
