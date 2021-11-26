@@ -5,9 +5,12 @@ import Spinner from '../../components/Spinner/Spinner';
 import {Data} from '../../data';
 import MailIcon from "@material-ui/icons/Close";
 import './Contact.css'
+// import AuthContext from '../../components/Context/Context';
 
 const usingurl = Data.alterData.using.url;
 class Contact extends Component {
+
+    // static contextType = AuthContext;
 
     state = {
         // isLoading: false,
@@ -32,12 +35,52 @@ class Contact extends Component {
     submitHandler = event => {
         event.preventDefault();
         this.setState({buttonState:false});
-        console.log("name", this.nameEl.current.value);
-        console.log("email", this.emailEl.current.value);
-        console.log("subject", this.subjectEl.current.value);
-        console.log("mesasge", this.messageEl.current.value);
-        this.setState({submitResultText:'Thanks for subscribing!, We\'ll contact in a day!'});
-        this.setState({submitResultTextState:true});
+        
+        const name = this.nameEl.current.value;
+        const email = this.emailEl.current.value;
+        const subject = this.subjectEl.current.value;
+        const message = this.messageEl.current.value;
+
+        let requestBody = {
+            query: `
+              mutation Contact($name: String!, $email: String!, $subject: String!, $message: String!) {
+                contact(contactInput: {name: $name, email: $email, subject: $subject, message: $message}) {
+                  name                 
+                }
+              }
+            `,
+            variables: {
+              name: name,
+              email: email,
+              subject: subject,
+              message: message
+            }
+          }
+      
+          fetch(usingurl, {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+              throw new Error('Failed!');
+            }
+            return res.json();
+          })
+          .then(resData => {
+            this.setState({submitResultText:'Thanks for subscribing!, We\'ll contact in a day!'});
+            this.setState({submitResultTextState:true});    
+          })
+          .catch(err => {
+            this.setState({submitResultText:'Something went wrong, pleae try again later!'});
+            this.setState({submitResultTextState:true}); 
+          });
+
+        // 
+        // 
         }
     render() {
         return (

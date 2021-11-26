@@ -184,12 +184,6 @@ class Reseller extends Component {
         const period = +this.periodElRef.current.value;
         const devices = +this.devicesElRef.current.value;
 
-        // const username = "firstuser3";
-        // const password = "123456";
-        // const email = "test@testemail.com";
-        // const period = 1;
-        // const devices = 1;
-
         if (username.trim().length === 0 || password.trim().length === 0 || email.trim().length === 0 ||  period <= 0 || devices <= 0) {
             this.onToast("failed", "Please fill all the fields correctly")
             this.setState({ isLoading: false }); 
@@ -252,20 +246,7 @@ class Reseller extends Component {
                     this.setState({ isLoading: false }); 
                     return;
                 }
-                // this.setState(prevState => {
-                // const updatedUsers = [...prevState.users];
-                // updatedUsers.push({
-                //     _id: resData.data.createUser._id,
-                //     username: resData.data.createUser.username,
-                //     password: resData.data.createUser.password,
-                //     email: resData.data.createUser.email,
-                //     startDate: resData.data.createUser.startDate,
-                //     endDate: resData.data.createUser.endDate,
-                //     devices: resData.data.createUser.devices,
-                // });
                 this.setState({creating:false});
-                // return { users: updatedUsers };
-                // });
                 this.onToast("success", "User created successfully!");
                 this.setState({ isLoading: false }); 
                 this.fetchCredits();

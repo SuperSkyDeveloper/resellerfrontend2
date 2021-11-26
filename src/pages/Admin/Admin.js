@@ -24,19 +24,26 @@ class Admin extends Component {
     this.usernameElRef = React.createRef();
     this.passwordElRef = React.createRef();
     this.creditsElRef = React.createRef();
+    this.oldSellerNameRefEl = React.createRef();
+    this.newSellerNameRefEl = React.createRef();
+    this.newPasswordRefEL = React.createRef();
     this.state = {
       users: [],
       payments: [],
       resellers:[],
       resellerCredits: 100000,
-      resellerName: "Panel Manager",
+      resellerName: "PanelManager",
       addingCredits: false,
       isLoading: false,
       creating: false,
+      isStartEditSeller:false,
+      willEditSellerName: '',
+      isStartDeleteSeller:false,
+      willDeleteSellerName: '',
     };
   }
 
-  onToast = (type, content) => {
+onToast = (type, content) => {
     switch (type) {
       case "success":
         toast.success(content);
@@ -48,6 +55,151 @@ class Admin extends Component {
         break;
     }
   }
+
+startEditSeller = reseller =>{
+  this.setState({isStartEditSeller:true});
+  this.setState({willEditSellerName:reseller.username});
+}
+startDeleteSeller = SellerName => {
+  this.setState({isStartDeleteSeller:true});
+  this.setState({willDeleteSellerName:SellerName});
+}
+
+cancelEditSeller = () => {
+  this.setState({isStartEditSeller:false});
+}
+cancelDeleteSeller = () =>{
+  this.setState({isStartDeleteSeller:false});
+  }
+
+editReseller = event => {
+  event.preventDefault();
+  this.setState({isLoading: true});
+  const oldSellerName = this.oldSellerNameRefEl.current.value;
+  const newSellerName = this.newSellerNameRefEl.current.value;
+  const newPassword = this.newPasswordRefEL.current.value;
+  if (newPassword.trim().length === 0) {
+    this.setState({isLoading: false});
+    this.onToast("failed", "Please fill all the forms");
+    return;
+  } 
+  let requestBody = {
+    query: `
+      mutation EditSeller($oldSellerName: String!, $newSellerName: String!, $newPassword: String!) {
+        editSeller(editSellerInput: {oldSellerName: $oldSellerName, newSellerName: $newSellerName, newPassword: $newPassword}) {
+         newSellerName
+        }
+      }
+    `,
+    variables: {
+      oldSellerName: oldSellerName,
+      newSellerName: newSellerName,
+      newPassword: newPassword
+    }
+  };
+
+  const token = this.context.token;
+
+  fetch(usingurl, {
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token
+    }
+  })
+  .then(res => {
+    if (res.status !== 200 && res.status !== 201) {
+      throw new Error('Failed!');
+    }
+    return res.json();
+  })
+  .then(resData => {
+    if(resData.data.editSeller.newSellerName === "-1"){
+    this.onToast("failed", "Seller already exist");
+    this.setState({isLoading: false});
+    return;
+    }
+    if(resData.data.editSeller.newSellerName === "-2"){
+      this.onToast("failed", "No such Seller");
+      this.setState({isLoading: false});
+      return;
+      }
+    this.fetchResellers();
+    this.onToast("success", "Changed Successfully!");
+    this.setState({isLoading: false});
+    this.setState({isStartEditSeller:false});
+    // if(resData.data.createReseller.credits<0){
+    //   this.setState({isLoading: false});
+    //   this.onToast("failed", "User already exist");
+    //   return;
+    // }
+    // this.setState({isLoading: false});
+    // this.onToast("success", "Info Changed Successfully");
+    // this.fetchResellers();
+    // this.setState({creating:false});    
+  })
+  .catch(err => {
+    this.onToast("failed", "Something went wrong");
+    this.setState({isLoading: false});
+    this.setState({isStartEditSeller:false});
+    // this.setState({creating:false});
+  });
+
+  // this.setState({isStartEditSeller:false});
+
+}
+
+deleteSeller = () => {
+  this.setState({isLoading:true});
+  const sellerName = this.state.willDeleteSellerName;
+  let requestBody = {
+    query: `
+      mutation DeleteSeller($sellerName: String!) {
+        deleteSeller(sellerName: $sellerName) {
+          sellerName
+        }
+      }
+    `,
+    variables: {
+      sellerName: sellerName,
+    }
+  };
+
+  const token = this.context.token;
+
+  fetch(usingurl, {
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token
+    }
+  })
+  .then(res => {
+    if (res.status !== 200 && res.status !== 201) {
+      throw new Error('Failed!');
+    }
+    return res.json();
+  })
+  .then(resData => {
+    if(resData.data.deleteSeller === "-1"){
+      this.onToast("failed", "Seller not Exist");
+      this.setState({isLoading:false});
+      this.setState({isStartDeleteSeller:false}); 
+      return;
+    }
+    this.fetchResellers();
+    this.onToast("success", "Seller Deleted Successfully");
+    this.setState({isLoading:false});
+    this.setState({isStartDeleteSeller:false});     
+  })
+  .catch(err => {
+    this.onToast("failed", "Something went wrong");
+    this.setState({isLoading:false});
+    this.setState({isStartDeleteSeller:false});  
+  });
+}
 
   fetchPayments = token => {
     const requestBody = {
@@ -243,8 +395,8 @@ class Admin extends Component {
       this.setState({creating:true});
   }
   startAddingCredits = () => {
-    if(this.state.resellerName === "All Users") {
-      this.onToast("failed", "Please select one of your resellers")
+    if(this.state.resellerName === "PanelManager") {
+      this.onToast("failed", "Please select one of your Sellers")
       return;
     }
     this.setState({addingCredits:true});
@@ -364,12 +516,57 @@ class Admin extends Component {
   }
   render() {
       return (
+        
           <React.Fragment>
             <ToastContainer />
+            {this.state.isStartDeleteSeller && (
+              <Modal
+              title="Delete Seller"
+              canCancel = {!this.state.isLoading}
+              canConfirm = {!this.state.isLoading}
+              onCancel={this.cancelDeleteSeller}
+              onConfirm={this.deleteSeller}
+              confirmText = "Delete Seller"
+              >
+                  <form>
+                  <div className="form-control">
+                      <label htmlFor="price">Sellername</label>
+                      <input type="text" id="credits" ref={this.oldSellerNameRefEl} disabled value={this.state.willDeleteSellerName} placeholder={this.state.willDeleteSellerName}/>
+                  </div>
+                  {this.state.isLoading &&<Spinner />}
+                  </form>
+              </Modal>
+            )}
+            {this.state.isStartEditSeller && (
+              <Modal
+              title="Change Info"
+              canCancel = {!this.state.isLoading}
+              canConfirm = {!this.state.isLoading}
+              onCancel={this.cancelEditSeller}
+              onConfirm={this.editReseller}
+              confirmText = "Change Info"
+              >
+                  <form>
+                  <div className="form-control">
+                      <label htmlFor="price">Sellername</label>
+                      <input type="text" id="credits" ref={this.oldSellerNameRefEl} disabled value={this.state.willEditSellerName} placeholder={this.state.willEditSellerName}/>
+                  </div>
+                  <div className="form-control">
+                      <label htmlFor="price">New Sellername</label>
+                      <input type="text" id="credits" ref={this.newSellerNameRefEl} placeholder={this.state.willEditSellerName}/>
+                  </div>
+                  <div className="form-control">
+                      <label htmlFor="price">New Password</label>
+                      <input type="text" id="credits" ref={this.newPasswordRefEL} />
+                  </div>
+                  {this.state.isLoading &&<Spinner />}
+                  </form>
+              </Modal>
+            )}
             {this.state.creating && <Backdrop />}
             {this.state.creating && (
-              <Modal
-              title="Create Seller"
+              <Modal 
+              title="Create Seller" 
               canCancel = {!this.state.isLoading}
               canConfirm = {!this.state.isLoading}
               onCancel={this.cancelCreateReseller}
@@ -394,6 +591,8 @@ class Admin extends Component {
               </Modal>
             )}
             {this.state.addingCredits && <Backdrop />}
+            {this.state.isStartEditSeller && <Backdrop />}
+            {this.state.isStartDeleteSeller && <Backdrop />}
             {this.state.addingCredits && (
               <Modal
               title="Add credits"
@@ -423,7 +622,7 @@ class Admin extends Component {
               </div>
               <div className="admin-body-main">
                 <div className ="reseller-list-table">
-                  <AdminTable data = {this.state.resellers} getUsers={this.fetchUsers} getCredits = {this.fetchCredits}/>
+                  <AdminTable data = {this.state.resellers} getUsers={this.fetchUsers} startEditSeller = {this.startEditSeller} startDeleteSeller = {this.startDeleteSeller}/>
                 </div>
                 <div className="admin-table">                  
                   <div className="table-header">                      

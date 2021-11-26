@@ -38,7 +38,7 @@
 }
 .admin-table {
     background-color: rgb(161, 166, 235);
-    width:80%;
+    width:70%;
     padding:2% 5%;
     border-radius: 10px;
     box-shadow: 0 4px 8px 0 rgb(245, 239, 239), 0 6px 20px 0 rgba(160, 22, 22, 0.19);
@@ -46,7 +46,7 @@
 }
 .reseller-list-table {
     color:rgb(255, 255, 255);
-    width:18%;
+    width:28%;
     /* background: rgb(14, 15, 14); */
     /* border-radius: 10px; */
     /* padding:2%; */
@@ -71,6 +71,10 @@
 }
 .table-button:hover {
   color: #5101d1;
+}
+
+.seller-edit {
+    margin-right: 5px;
 }
 
 @media (min-width: 1025px) {

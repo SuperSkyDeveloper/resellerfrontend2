@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 // import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
+import SettingButton from '@material-ui/icons/Settings';
+import DeleteButton from '@material-ui/icons/DeleteSweep';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
@@ -73,6 +75,7 @@ function stableSort(array, comparator) {
 const headCells = [
   { id: 'username', numeric: false, disablePadding: true, label: 'SellerName' },
   { id: 'credits', numeric: true, disablePadding: false, label: 'Credits' },
+  { id: '_id', numeric: true, disablePadding: false, label: 'Options' },
 //   { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
 //   { id: 'startDate', numeric: true, disablePadding: false, label: 'Start Date' },
 //   { id: 'endDate', numeric: true, disablePadding: false, label: 'End Date' },
@@ -326,6 +329,10 @@ export default function EnhancedTable(props) {
                         <button className="table-button" onClick={() => props.getUsers(row.token)}>{row.username}</button>
                       </TableCell>
                       <TableCell align="right">{row.credits}</TableCell>
+                      <TableCell align="right">
+                      <span className="seller-edit"><button className="table-button" onClick={() => props.startEditSeller(row)}><SettingButton/></button></span>
+                      <span className="seller-delete"><button className="table-button" onClick={() => props.startDeleteSeller(row.username)}><DeleteButton/></button></span>                      </TableCell>
+                      
                       {/* <TableCell align="right">{row.email}</TableCell>
                       <TableCell align="right">{row.startDate}</TableCell>
                       <TableCell align="right">{row.endDate}</TableCell>
