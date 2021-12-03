@@ -410,6 +410,18 @@ deleteSeller = () => {
     this.setState({addingCredits:false});
   }
 
+  startEditUser = () => {
+    this.onToast("success", "Started Edit User!");
+  }
+
+  startDeleteUser = () => {
+    this.onToast("success", "Started Delete User!");
+  }
+
+  startRenewUser = () => {
+    this.onToast("success", "Started Renew User!");
+  }
+
   createReseller = event =>{
     event.preventDefault();
     this.setState({isLoading: true});
@@ -635,7 +647,7 @@ deleteSeller = () => {
                     </div>                    
                   </div>
                   {/* <ResellerTable data = {this.state.users}/> */}
-                  <TabCom data={this.state.users} payments ={this.state.payments}/>
+                  <TabCom data={this.state.users} payments ={this.state.payments} startEditUser={this.startEditUser} startDeleteUser={this.startDeleteUser} startRenewUser={this.startRenewUser} />
                 </div>
               </div>
             </div>

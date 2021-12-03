@@ -80,7 +80,7 @@ export default function TabCom(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <ResellerTable data = {props.data} />
+        <ResellerTable data = {props.data} startEditUser = {props.startEditUser} startDeleteUser = {props.startDeleteUser} startRenewUser = {props.startRenewUser} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <PaymentTable data = {props.payments} />

@@ -24,19 +24,26 @@ class Reseller extends Component {
         creating: false,
         credits: [],
         isLoading:false,
-        payments: [{_id:"theajfsdf434f$",credits:30, price:150, createdAt:"2021/11/15"},
-                    {_id:"tethew$#FFEF33",credits:30, price:150, createdAt:"2021/11/15"}             ],
-                };
+        payments: [],
+        isEditing: false,
+        isDeleting: false,
+        isRenewing: false,
+        willoptionUser:"",
+        expireDate: "",
+        devices: 0
+    };
 
     static contextType = Context;
 
     constructor(props) {
         super(props);
         this.usernameElRef = React.createRef();
+        this.newUsernameElRef = React.createRef();
         this.passwordElRef = React.createRef();
         this.emailElRef = React.createRef();
         this.periodElRef = React.createRef();
         this.devicesElRef = React.createRef();
+        this.renewElRef = React.createRef();
 
     }
 
@@ -58,6 +65,211 @@ class Reseller extends Component {
         this.fetchCredits();
         this.fetchPayments();
 
+    }
+
+    startEditUser = user => {
+        this.setState({willoptionUser: user.username})
+        this.setState({isEditing: true});
+    }
+
+    cancelEditUser = () => {
+        this.setState({isEditing: false});
+    }
+
+    startDeleteUser = (userame) => {
+        this.setState({willoptionUser: userame})
+        this.setState({isDeleting: true});
+    }
+
+    cancelDeleteUser = () => {
+        this.setState({isDeleting: false});
+    }
+
+    startRenewUser = (user) => {
+        this.setState({isRenewing:true});
+        this.setState({willoptionUser: user.username});
+        this.setState({expireDate: user.endDate});
+        this.setState({devices: user.devices});
+    }
+
+    cancelRenewUser = () => {
+        this.setState({isRenewing: false});
+    }
+
+    renewUser = () => {
+        this.setState({isLoading:true});
+        const username = this.state.willoptionUser;
+        const renew = +this.renewElRef.current.value;
+        if (!renew|| renew<=0) {
+            this.onToast("failed", "Please fill the form correctly");
+            this.setState({isLoading: false});
+            return;
+          }
+          let requestBody = {
+            query: `
+              mutation RenewUser($username: String!, $renew: Float!) {
+                renewUser(username: $username, renew: $renew) {
+                  username
+                  renew
+                }
+              }
+            `,
+            variables: {
+              username: username,
+              renew: renew
+            }
+          };
+        
+          const token = this.context.token;
+        
+          fetch(usingurl, {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token
+            }
+          })
+          .then(res => {
+              console.log("res", res);
+            if (res.status !== 200 && res.status !== 201) {
+              throw new Error('Failed!');
+            }
+            return res.json();
+          })
+          .then(resData => {
+            if(resData.data.renewUser.username === "-1"){
+              this.onToast("failed", "User not Exist");
+              this.setState({isLoading:false});
+              this.setState({isRenewing:false}); 
+              return;
+            }
+            this.fetchUsers();
+            this.onToast("success", "User Updated Successfully");
+            this.setState({isLoading:false});
+            this.setState({isRenewing:false});     
+          })
+          .catch(err => {
+            this.onToast("failed", "Something went wrong");
+            this.setState({isLoading:false});
+            this.setState({isDeleting:false});  
+          });
+        
+    }
+
+    deleteUser = () => {
+        this.setState({ isLoading: true }); 
+        const username = this.usernameElRef.current.value;
+        let requestBody = {
+            query: `
+              mutation DeleteUser($username: String!) {
+                deleteUser(username: $username) {
+                  username
+                }
+              }
+            `,
+            variables: {
+              username: username,
+            }
+          };
+        
+          const token = this.context.token;
+        
+          fetch(usingurl, {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token
+            }
+          })
+          .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+              throw new Error('Failed!');
+            }
+            return res.json();
+          })
+          .then(resData => {
+            if(resData.data.deleteUser.username === "-1"){
+              this.onToast("failed", "User not Exist");
+              this.setState({isLoading:false});
+              this.setState({isDeleting:false}); 
+              return;
+            }
+            this.fetchUsers();
+            this.onToast("success", "User Deleted Successfully");
+            this.setState({isLoading:false});
+            this.setState({isDeleting:false});     
+          })
+          .catch(err => {
+            this.onToast("failed", "Something went wrong");
+            this.setState({isLoading:false});
+            this.setState({isDeleting:false});  
+          });
+    }
+
+    editUser = () => {
+        this.setState({ isLoading: true }); 
+        const username = this.usernameElRef.current.value;
+        const newUsername = this.newUsernameElRef.current.value;
+        const password = this.passwordElRef.current.value;
+
+        if (password.trim().length === 0) {
+            this.onToast("failed", "Please fill the fields correctly")
+            this.setState({ isLoading: false }); 
+            return;
+        }
+
+        const requestBody = {
+            query:`
+                mutation EditUser($username: String!, $password: String!, $newUsername: String!) {
+                    editUser(editUserInput: { username: $username, password: $password, newUsername: $newUsername}) {
+                        newUsername
+                    }
+                }
+            `,
+            variables: {
+                username: username,
+                password: password,
+                newUsername: newUsername, 
+            }
+        };
+
+        const token = this.context.token;
+
+        fetch(usingurl, {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            }
+        })
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    
+                    throw new Error('Failed!');
+                }
+                return res.json();
+            })
+            .then(resData => {
+                if(resData.data.editUser.newUsername === "-1"){
+                    this.onToast("failed", "User already exist");
+                    this.setState({ isLoading: false }); 
+                    return;
+                }
+                this.setState({creating:false});
+                this.onToast("success", "User updated successfully!");
+                this.setState({ isLoading: false }); 
+                this.setState({ isEditing: false });
+                this.fetchUsers();
+            })
+            .catch(err => {
+                console.log(err);
+                this.onToast("failed", "Something Went Wrong! Please try again later.");
+                this.setState({ isLoading: false }); 
+                this.setState({ isEditing: false });
+            }); 
     }
 
     fetchPayments = () => {
@@ -254,6 +466,7 @@ class Reseller extends Component {
             })
             .catch(err => {
                 console.log(err);
+                this.onToast("failed", "Something Went Wrong!");
             });     
     }
     cancelCreateUser = () =>{
@@ -264,6 +477,9 @@ class Reseller extends Component {
             <React.Fragment>
             <ToastContainer />
             {this.state.creating && <Backdrop />}
+            {this.state.isDeleting && <Backdrop />}
+            {this.state.isEditing && <Backdrop />}
+            {this.state.isRenewing && <Backdrop />}
             {this.state.creating && (
             <Modal
             title="Create User"
@@ -274,27 +490,98 @@ class Reseller extends Component {
             confirmText = "Create User"
             >
                 <form>
-                <div className="form-control">
-                    <label htmlFor="username">Username</label>
-                    <input type="text" id="username"  ref={this.usernameElRef}/>
-                </div>
-                <div className="form-control">
-                    <label htmlFor="password">Password</label>
-                    <input type="text" id="password" ref={this.passwordElRef} />
-                </div>
-                <div className="form-control">
-                    <label htmlFor="email">Email Adress</label>
-                    <input type="email" id="email" ref={this.emailElRef} />
-                </div>
-                <div className="form-control">
-                    <label htmlFor="period">Period(Month)</label>
-                    <input type="number" id="period" ref={this.periodElRef} />
-                </div>
-                <div className="form-control">
-                    <label htmlFor="devices">Devices</label>
-                    <input type="number" id="devices" ref={this.devicesElRef} />
-                </div>
-                {this.state.isLoading &&<Spinner />}
+                    <div className="form-control">
+                        <label htmlFor="username">Username</label>
+                        <input type="text" id="username"  ref={this.usernameElRef}/>
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="password">Password</label>
+                        <input type="text" id="password" ref={this.passwordElRef} />
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="email">Email Adress</label>
+                        <input type="email" id="email" ref={this.emailElRef} />
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="period">Period(Month)</label>
+                        <input type="number" id="period" ref={this.periodElRef} />
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="devices">Devices</label>
+                        <input type="number" id="devices" ref={this.devicesElRef} />
+                    </div>
+                    {this.state.isLoading &&<Spinner />}
+                </form>
+            </Modal>)}
+            {this.state.isEditing && (
+            <Modal
+            title="Edit User"
+            canCancel = {!this.state.isLoading}
+            canConfirm = {!this.state.isLoading}
+            onCancel={this.cancelEditUser}
+            onConfirm={this.editUser}
+            confirmText = "Edit User"
+            >
+                <form>
+                    <div className="form-control">
+                        <label htmlFor="username">Old Username</label>
+                        <input type="text" id="username"  ref={this.usernameElRef}disabled value={this.state.willoptionUser}/>
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="newUsername">New Username</label>
+                        <input type="text" id="newUsername"  ref={this.newUsernameElRef}/>
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="password">New Password</label>
+                        <input type="text" id="password" ref={this.passwordElRef} />
+                    </div>
+                    {this.state.isLoading &&<Spinner />}
+                </form>
+            </Modal>)}
+            {this.state.isDeleting && (
+            <Modal
+            title="Delete User"
+            canCancel = {!this.state.isLoading}
+            canConfirm = {!this.state.isLoading}
+            onCancel={this.cancelDeleteUser}
+            onConfirm={this.deleteUser}
+            confirmText = "Delete User"
+            >
+                <form>
+                    <div className="form-control">
+                        <label htmlFor="username">Username</label>
+                        <input type="text" id="username"  ref={this.usernameElRef}disabled value={this.state.willoptionUser}/>
+                    </div>
+                    {this.state.isLoading &&<Spinner />}
+                </form>
+            </Modal>)}
+            {this.state.isRenewing && (
+            <Modal
+            title="Renew User"
+            canCancel = {!this.state.isLoading}
+            canConfirm = {!this.state.isLoading}
+            onCancel={this.cancelRenewUser}
+            onConfirm={this.renewUser}
+            confirmText = "Renew User"
+            >
+                <form>
+                    <div className="form-control">
+                        <label htmlFor="username">Username</label>
+                        <input type="text" id="username"  ref={this.usernameElRef}disabled value={this.state.willoptionUser}/>
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="expireDate">Expire Date</label>
+                        <input type="text" id="expireDate" disabled value={this.state.expireDate}/>
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="devices">Devices</label>
+                        <input type="number" id="devices" disabled value={this.state.devices}/>
+                    </div>
+                    <div className="form-control">
+                        <label htmlFor="renew">Renew(Months)</label>
+                        <input type="number" id="renew" ref={this.renewElRef} />
+                    </div>
+                    {this.state.isLoading &&<Spinner />}
                 </form>
             </Modal>)}
             <div className="reseller-body">
@@ -308,7 +595,7 @@ class Reseller extends Component {
                     </div>
                 </div>
                 {/* <ResellerTable data={this.state.users}/> */}
-                <TabCom data={this.state.users} payments ={this.state.payments}/>
+                <TabCom data={this.state.users} payments ={this.state.payments} startEditUser={this.startEditUser} startDeleteUser={this.startDeleteUser} startRenewUser={this.startRenewUser}/>
             </div>
             
             </React.Fragment >

@@ -31,6 +31,14 @@
     padding: 0rem 3rem 3rem 3rem;
   }
 
+  .btn-model-left {
+    margin-right: 10px;
+  }
+  .btn-model-right {
+    margin-left: 10px;
+  }
+
+
   
   @media (min-width: 901px) {
     .modal {

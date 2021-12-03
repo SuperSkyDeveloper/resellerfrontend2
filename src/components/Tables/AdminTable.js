@@ -330,8 +330,9 @@ export default function EnhancedTable(props) {
                       </TableCell>
                       <TableCell align="right">{row.credits}</TableCell>
                       <TableCell align="right">
-                      <span className="seller-edit"><button className="table-button" onClick={() => props.startEditSeller(row)}><SettingButton/></button></span>
-                      <span className="seller-delete"><button className="table-button" onClick={() => props.startDeleteSeller(row.username)}><DeleteButton/></button></span>                      </TableCell>
+                        <span className="seller-edit" title="Edit Seller"><button className="table-button" onClick={() => props.startEditSeller(row)}><SettingButton/></button></span>
+                        <span className="seller-delete" title="Delete Seller"><button className="table-button" onClick={() => props.startDeleteSeller(row.username)}><DeleteButton/></button></span> 
+                      </TableCell>
                       
                       {/* <TableCell align="right">{row.email}</TableCell>
                       <TableCell align="right">{row.startDate}</TableCell>

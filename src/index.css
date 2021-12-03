@@ -37,7 +37,7 @@ code {
 .form-control input {
   background-color: rgb(7, 45, 77);
   border: 1px solid #efecf3;
-  border-radius: 25px;
+  border-radius: 5px;
   text-align: center;
   color:white;
 }
@@ -60,7 +60,7 @@ code {
   background: #5101d1 !important;
   font: inherit !important;
   border: 1px solid #efecf3 !important;
-  border-radius: 25px !important;
+  border-radius: 5px !important;
   padding: 0.25rem auto;
   /* margin-right: 1rem; */
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.26);
@@ -125,6 +125,20 @@ code {
   color:white !important;
 }
 
+.user-table-button .MuiSvgIcon-root {
+  color:black;
+  margin-left:0px;
+}
+.user-table-button .MuiSvgIcon-root:hover{
+  color:red;
+}
+
+.MuiTableSortLabel-active:hover,.MuiTableSortLabel-root:hover {
+  color:rgb(25, 10, 236) !important;
+}
+.MuiTableSortLabel-active {
+  color:rgb(25, 10, 236) !important;
+}
 
 @media (max-width: 450px) {
   .auth-form {

@@ -20,7 +20,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-
+import SettingButton from '@material-ui/icons/Settings';
+import DeleteButton from '@material-ui/icons/DeleteSweep';
+import ExpandButton from '@material-ui/icons/SettingsOverscan';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -56,6 +58,8 @@ const headCells = [
   { id: 'startDate', numeric: true, disablePadding: false, label: 'Start Date' },
   { id: 'endDate', numeric: true, disablePadding: false, label: 'End Date' },
   { id: 'devices', numeric: true, disablePadding: false, label: 'Devices' },
+  { id: 'today', numeric: true, disablePadding: false, label: 'Today' },
+  { id: '_id', numeric: true, disablePadding: false, label: 'Options' },
 ];
 
 function EnhancedTableHead(props) {
@@ -197,7 +201,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EnhancedTable(props) {
+  const current = new Date();
   const rows = props.data;
+  const date1 = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -309,6 +315,12 @@ export default function EnhancedTable(props) {
                       <TableCell align="right">{row.startDate}</TableCell>
                       <TableCell align="right">{row.endDate}</TableCell>
                       <TableCell align="right">{row.devices}</TableCell>
+                      <TableCell align="right">{row.endDate > date1? "Active":"Expired"}</TableCell>
+                      {<TableCell align="right">
+                        <span className="user-edit" title='Edit User'>{row.endDate > date1? <button className="user-table-button" onClick={() => props.startEditUser(row)}><SettingButton/></button>:<button className="user-table-button-disabled" disabled><SettingButton/></button>}</span>
+                        <span className="user-delete" title="Delete User"><button className="user-table-button" onClick={() => props.startDeleteUser(row.username)}><DeleteButton/></button></span> 
+                        <span className="user-expand" title="Exptend User">{row.endDate > date1?<button className="user-table-button" onClick={() => props.startRenewUser(row)}><ExpandButton/></button>:<button className="user-table-button-disabled" disabled><ExpandButton/></button>}</span>
+                      </TableCell>}
                     </TableRow>
                   );
                 })}
