@@ -1,22 +1,25 @@
+//Stripe integration
 import React, { Component } from 'react';
+import StripeCheckout from "react-stripe-checkout";
 import { ToastContainer, toast} from 'react-toastify';
 import AuthContext from '../../components/Context/Context';
-import {Redirect} from 'react-router-dom';
-import {Data} from '../../data';
+import { Data } from '../../data';
 import './Payment.css'
 
 const usingurl = Data.alterData.using.url;
+const stripe = Data.alterData.using.stripe;
 
 class Payment extends Component {
     static contextType = AuthContext;
     constructor(props) {
         super(props); 
         this.state = {
+          product: {
           name:localStorage.getItem('username'),
-          // price:typeof(this.props.location.state)==="undefined"?0:this.props.location.state.price,
-          // credits:typeof(this.props.location.state)==="undefined"?0:this.props.location.state.credits,
           price:this.props.location.state.price,
-          credits:this.props.location.state.credits
+          credits:this.props.location.state.credits,
+          productBy: "GameRoom"
+          }
         }
       }
       onToast = (type, content) => {
@@ -31,23 +34,27 @@ class Payment extends Component {
             break;
         }
       }
-      paypal = () => {
-        console.log("Start Payment");
-        const token = this.context.token;
-        const name = this. state.name;
-        const price = +this. state.price;
-        const credits = +this. state.credits;
+
+      makePayment = (info) => {
+
+        const token1 = this.context.token;
+        const name = this. state.product.name;
+        const price = +this. state.product.price;
+        const credits = +this. state.product.credits;
+        const infoEmail = info.email;
+        const infoId = info.id;
+        const infoCard = info.card.name;
+        const infoCountry = info.card.address_country;        
+
         const requestBody = {
           query:`
-              mutation Paypal($name: String!, $price: Float!, $credits: Float!) {
-                  paypal(paypalInput: {name: $name, price: $price, credits: $credits}) {
+              mutation Payment($infoCountry: String!, $infoCard: String! $name: String!, $price: Float!, $credits: Float!, $infoEmail: String!, $infoId: String!) {
+                  payment(paymentInput: { infoCountry: $infoCountry, infoCard: $infoCard, name: $name, price: $price, credits: $credits, infoEmail: $infoEmail, infoId: $infoId}) {
                       _id
                       resellerName
                       credits
                       price
-                      createdAt
-
-                      
+                      createdAt                      
                   }
               }
           `,
@@ -55,81 +62,154 @@ class Payment extends Component {
               name: name,
               price: price,
               credits: credits,
+              infoEmail: infoEmail,
+              infoId: infoId,
+              infoCard: infoCard,
+              infoCountry: infoCountry
+          }
+      };
+      
+      fetch(usingurl, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token1
+        }
+      })
+      .then(res => {
+        console.log("responsse", res);        
+        if (res.status !== 200 && res.status !== 201) {
+        this.onToast('failed', 'Something Went Wrong! Please try again later');
+        throw new Error('Failed!');
+        }
+        return res.json();
+      })
+      .then(resData => {
+        this.onToast('success', 'Payment Success!');
+        this.paymentlog();
+        
+      })
+      .catch(err => {
+        console.log(err);
+      }); 
+
+      };
+      paymentlog = () => {
+        const name = localStorage.getItem('username');
+        const credits = this.state.product.credits;
+        const price = this.state.product.price;
+  
+        let requestBody = {
+          query: `
+            mutation Paypal($name: String!, $credits: Float!, $price: Float!) {
+              paypal(paypalInput: {name: $name, credits: $credits, price: $price }) {
+                _id
+                price
+                credits
+                resellerName
+                createdAt
+              }
+            }
+          `,
+          variables: {
+            name: name,
+            credits: credits,
+            price:price
           }
         };
+        const token = this.context.token;
         fetch(usingurl, {
           method: 'POST',
           body: JSON.stringify(requestBody),
           headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + token
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
           }
         })
         .then(res => {
-          console.log("responsse", res);
-          
+          // console.log("res", res);
           if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Failed!');
+            throw new Error('Failed!');
           }
           return res.json();
         })
         .then(resData => {
-          console.log("resData", resData);
-          
+            this.addCredits();     
         })
         .catch(err => {
           console.log(err);
-        }); 
-      }
-
-      testPaypal = () => {
-        if(!this.state.price) {
-          this.onToast("failed", "Something went wrong")
-        } else {
-          const requestOption = {
-            method : 'POST',
-            headers : { 'Content-Type' : 'application/json'},
-            body: JSON.stringify({ amount : this.state.price, })
-          };
-          fetch("http://localhost:8000/buy", requestOption)
-          .then(res => res.json())
-          .then(value => {
-            console.log("value", value);
-          });
-        }
+        });
+  
       };
-
+      addCredits = event =>{
+        // event.preventDefault();
+        const resellerName = localStorage.getItem('username');
+        const credits = this.state.product.credits; 
+      
+        let requestBody = {
+          query: `
+            mutation AddCredits($resellerName: String!, $credits: Float!) {
+              addCredits(resellerName: $resellerName, credits: $credits) {
+                credits
+              }
+            }
+          `,
+          variables: {
+            resellerName: resellerName,
+            credits: credits
+          }
+        };
+      
+        const token = this.context.token;
+      
+        fetch(usingurl, {
+          method: 'POST',
+          body: JSON.stringify(requestBody),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+          }
+        })
+        .then(res => {
+          // console.log("res", res);
+          if (res.status !== 200 && res.status !== 201) {
+            throw new Error('Failed!');
+          }
+          return res.json();
+        })
+        .then(resData => {
+            // console.log("resData",resData);
+          // this.fetchCredits();
+        //   this.setState({resellerCredits:resData.data.addCredits.credits});
+        //   this.onToast("success", "Credits added Successfully");
+        //   this.setState({addingCredits:false});     
+        })
+        .catch(err => {
+        //   this.onToast("failed", "Something went wrong");
+        //   this.setState({creating:false});
+          console.log(err);
+        });
+        
+        };
   render() {  
-    if (typeof(this.props.location.state)==="undefined") {
-      return <Redirect to='/shop' />
-    }
-    // console.log("price", typeof(this.props.location.state));
     return (
         <>
         <ToastContainer />
-        <div className="paypal-body">
-            <div className="row">
-              <div className="col-md-3"></div> 
-                <div className="col-md-6">
-                  <div className = "main-paypal">
-                    <div className="row padder">
-                      <div> 
-                        <h2> By {this.state.credits} Credits </h2> 
-                        <hr /> 
-                        <b> Description: </b> <span className="description">Start earning money with more credits as reseller.  Allows you to start
-                        selling as soon as you start  business. </span>
-                        <hr /> 
-                        <h2> Only for ${this.state.price} </h2>
-                        <hr />
-                          <button className="btn btn-warning btn-payment" onClick={this.testPaypal}> <i><span className="paypal-text-first">Pay</span></i><i><span className="paypal-text-second">Pal</span></i> </button>
-                      </div> 
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-2"> 
-              </div>
+        <div className="payment-body">
+            <div className="payment-first-form">
+                <h1 className="payment-credit-text">{this.props.location.state.credits} Credits</h1>
+                <StripeCheckout stripeKey={stripe}
+                token={this.makePayment} 
+                name="Buy Credits"
+                amount={this.props.location.state.price*100}
+                shippingAddress
+                billingAddress 
+                >
+                <button className="btn-payment">Buy Credits with  {this.props.location.state.price}$</button>
+                </StripeCheckout>
             </div>
-        </div>
+      </div>
       </>
     )
   }

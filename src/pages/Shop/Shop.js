@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import  { Data }  from '../../data'
 import { Link } from 'react-router-dom';
 import AuthContext from '../../components/Context/Context';
+import Payment from '../Payment/Payment1';
 
 class Shop extends React.Component {
   static contextType = AuthContext;
@@ -49,18 +50,25 @@ class Shop extends React.Component {
                     <i class="fa fa-check mr-2 text-primary"></i> 0% Extra</li>
                 </ul>
                 {/* <button class="btn-price">Buy Now</button> */}
+
+        {/* Stripe Button */}
                 
-                {/* <Link to= {
+                {/* {this.context.token?(<Link to= {
                   {
                     pathname: '/payment',
                     state: {credits: row.credits, price: row.price}
                   }
-                }>Buy now</Link> */}
-                <ProductCard 
+                }>Buy now</Link>):<Link to= '/login'className="btn payment-alter-button"><p className="payment-alter-text">Please Login to Buy Credits</p></Link>} */}
+                
+                {this.context.token?(<Payment credits= {row.credits} price= {row.price}/>):<Link to= '/login'className="btn payment-alter-button"><p className="payment-alter-text">Please Login to Buy Credits</p></Link>}
+
+          {/* paypal button */}
+                {/* <ProductCard 
                   key={row.id}
                   price = {row.price}
                   credits = {row.credits}
-                  />
+                  /> */}
+
               </div>
             </div>
             })}

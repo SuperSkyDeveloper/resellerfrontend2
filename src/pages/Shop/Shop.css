@@ -45,3 +45,19 @@
   .bg-white a:hover {
     background: rgb(40, 37, 207);
   }
+
+  .payment-alter-button {    
+    /* padding:0;
+    margin:0; */
+    background-color: transparent !important;
+    min-height:70px;
+    align-items: center;
+    text-align: center;
+  }
+  .payment-alter-text {
+    color:rgb(186, 185, 226);
+    font-weight: 600;
+  }
+  .payment-alter-text:hover {
+    color:rgb(127, 119, 243);
+  }

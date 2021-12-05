@@ -68,6 +68,10 @@ class App extends Component {
           <Navigation username={this.state.username}/>
           <main className="main-content">
             <Switch>
+              {/* {!this.state.token && (
+                <Redirect from="/payment" to="/login" exact />
+              )} */}
+ 
               {this.state.token && (
                 <Redirect from="/login" to="/account" exact />
               )}
@@ -87,11 +91,12 @@ class App extends Component {
               {!this.state.token && (
                 <Redirect from="/payment" to="/login" exact />
               )}   
-              <Route path="/payment" component={Payment} />          
+              <Route path="/payment" component={Payment} />        
               <Route path="/home" component={Homepage} /> 
               <Route path="/shop" component={Shop} /> 
               <Redirect from="/" to="/home" exact /> 
               <Route path="/contact" component={Contact} /> 
+              <Route path="/payment" component={Payment} /> 
                          
             </Switch>
           </main>

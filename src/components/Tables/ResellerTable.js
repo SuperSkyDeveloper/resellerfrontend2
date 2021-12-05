@@ -203,7 +203,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EnhancedTable(props) {
   const current = new Date();
   const rows = props.data;
-  const date1 = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
+  const date1 = `${current.getFullYear()}/${current.getMonth()}/${current.getDate()}`;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
