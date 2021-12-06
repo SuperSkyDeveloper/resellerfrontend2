@@ -7,7 +7,7 @@ import { Data } from '../../data';
 // import './Payment.css'
 
 const usingurl = Data.alterData.using.url;
-const stripe = Data.alterData.using.stripe;
+
 
 class Payment extends Component {
     static contextType = AuthContext;
@@ -18,7 +18,8 @@ class Payment extends Component {
           name:localStorage.getItem('username'),
           price:this.props.price,
           credits:this.props.credits,
-          productBy: "GameRoom"
+          productBy: "GameRoom",
+          stripe: Data.alterData.using.stripe
           }
         }
       }
@@ -86,9 +87,12 @@ class Payment extends Component {
         return res.json();
       })
       .then(resData => {
+        if(!resData.data.payment) {
+            this.onToast('failed', 'Payment Failed. Please try again later');
+            return;
+        }
         this.onToast('success', 'Payment Success!');
-        this.paymentlog();
-        
+        this.paymentlog();        
       })
       .catch(err => {
         console.log(err);
@@ -192,13 +196,13 @@ class Payment extends Component {
         });
         
         };
-  render() {  
+  render() {
     return (
         <>
         <ToastContainer />
         <div className="payment-body">
             <div className="payment-first-form">
-                <StripeCheckout stripeKey={stripe}
+                <StripeCheckout stripeKey={this.state.product.stripe}
                 token={this.makePayment} 
                 name="Buy Credits"
                 amount={this.props.price*100}
