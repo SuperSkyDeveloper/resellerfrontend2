@@ -21,8 +21,8 @@
   */
   .maincontainer {
     background: #00B4DB;
-    background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);
-    background: linear-gradient(to right, #0083B0, #00B4DB);
+    background: linear-gradient(70deg,#1e3edb,#85279d);
+    background: linear-gradient(70deg,#1e3edb,#85279d);
     color: #514B64;
     min-height: 100vh;
   }
