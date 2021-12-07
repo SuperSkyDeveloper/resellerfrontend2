@@ -161,3 +161,17 @@ code {
     top: 0 !important;;
   }
 }
+
+@media (max-height: 850px) {
+  .form-control {
+    margin:0;
+    padding: 2px 0 !important;
+  }
+  .form-control label {
+    font-size:20px;
+    height:25px;
+  }
+  .form-control input {
+    height:35px;
+  }
+}

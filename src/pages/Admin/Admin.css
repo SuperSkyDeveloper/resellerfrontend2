@@ -77,6 +77,10 @@
     margin-right: 5px;
 }
 
+.adminTable .MuiTableContainer-root {
+    min-height:600px;
+}
+
 @media (min-width: 1025px) {
     .admin-body-header, 
     .admin-header-left,

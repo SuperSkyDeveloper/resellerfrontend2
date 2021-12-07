@@ -283,86 +283,88 @@ export default function EnhancedTable(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <div className="adminTable">
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? 'small' : 'medium'}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.name);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      {/* <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell> */}
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        <button className="table-button" onClick={() => props.getUsers(row.token)}>{row.username}</button>
-                      </TableCell>
-                      <TableCell align="right">{row.credits}</TableCell>
-                      <TableCell align="right">
-                        <span className="seller-edit" title="Edit Seller"><button className="table-button" onClick={() => props.startEditSeller(row)}><SettingButton/></button></span>
-                        <span className="seller-delete" title="Delete Seller"><button className="table-button" onClick={() => props.startDeleteSeller(row.username)}><DeleteButton/></button></span> 
-                      </TableCell>
-                      
-                      {/* <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.startDate}</TableCell>
-                      <TableCell align="right">{row.endDate}</TableCell>
-                      <TableCell align="right">{row.devices}</TableCell> */}
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.name)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
+                      >
+                        {/* <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </TableCell> */}
+                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                          <button className="table-button" onClick={() => props.getUsers(row.token)}>{row.username}</button>
+                        </TableCell>
+                        <TableCell align="right">{row.credits}</TableCell>
+                        <TableCell align="right">
+                          <span className="seller-edit" title="Edit Seller"><button className="table-button" onClick={() => props.startEditSeller(row)}><SettingButton/></button></span>
+                          <span className="seller-delete" title="Delete Seller"><button className="table-button" onClick={() => props.startDeleteSeller(row.username)}><DeleteButton/></button></span> 
+                        </TableCell>
+                        
+                        {/* <TableCell align="right">{row.email}</TableCell>
+                        <TableCell align="right">{row.startDate}</TableCell>
+                        <TableCell align="right">{row.endDate}</TableCell>
+                        <TableCell align="right">{row.devices}</TableCell> */}
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+        {/* <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Dense padding"
+        /> */}
+      </div>
     </div>
   );
 }
