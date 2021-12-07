@@ -78,7 +78,10 @@
 }
 
 .adminTable .MuiTableContainer-root {
-    min-height:600px;
+    min-height:602px;
+}
+.makeStyles-paper-13{
+    margin:0 !important;
 }
 
 @media (min-width: 1025px) {
