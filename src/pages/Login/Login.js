@@ -112,7 +112,7 @@ class Login extends Component {
       <div className="login-body">
         <ToastContainer />
         <form className="auth-form" onSubmit={this.submitHandler}>
-          <h3 className="label">WELCOME TO PANNEL</h3>
+          <h3 className="label">WELCOME TO PANEL</h3>
           <div className="form-control">
             <label htmlFor="username">Username</label>
             <input type="username" id="username" ref={this.usernameEl} placeholder="Enter Your Username" />

@@ -145,6 +145,7 @@ class Reseller extends Component {
               return;
             }
             this.fetchUsers();
+            this.fetchCredits();
             this.onToast("success", "User Updated Successfully");
             this.setState({isLoading:false});
             this.setState({isRenewing:false});     
@@ -280,7 +281,8 @@ class Reseller extends Component {
                     _id
                     credits
                     price
-                    createdAt                    
+                    createdAt  
+                    resellerName                  
                 }
             }           
             `
@@ -459,7 +461,7 @@ class Reseller extends Component {
                     return;
                 }
                 this.setState({creating:false});
-                this.onToast("success", "User created successfully!");
+                this.onToast("success", `${username}'s account created successfully!`);
                 this.setState({ isLoading: false }); 
                 this.fetchCredits();
                 this.fetchUsers();

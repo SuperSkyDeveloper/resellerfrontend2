@@ -209,7 +209,8 @@ deleteSeller = () => {
                 _id
                 credits
                 price
-                createdAt                    
+                createdAt  
+                resellerName                  
             }
         }           
         `

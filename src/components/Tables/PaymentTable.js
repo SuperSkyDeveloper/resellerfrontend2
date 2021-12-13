@@ -50,7 +50,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
     
-  { id: '_id', numeric: false, disablePadding: true, label: 'PaymentID' },
+  { id: '_id', numeric: false, disablePadding: true, label: 'Seller' },
   { id: 'credits', numeric: true, disablePadding: false, label: 'Credits' },
   { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
   { id: 'createdAt', numeric: true, disablePadding: false, label: 'Date' },
@@ -300,7 +300,7 @@ export default function PaymentTable(props) {
                         />
                       </TableCell> */}
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row._id}
+                        {row.resellerName}
                       </TableCell>
                       <TableCell align="right">{row.credits}</TableCell>
                       <TableCell align="right">{row.price} $</TableCell>
