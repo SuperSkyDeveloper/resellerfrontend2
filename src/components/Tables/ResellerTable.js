@@ -204,7 +204,7 @@ export default function EnhancedTable(props) {
   const current = new Date();
   const rows = props.data;
   const date1 = `${current.getFullYear()}/${current.getMonth()<9?0:""}${current.getMonth()+1}/${current.getDate()<10?0:""}${current.getDate()}`;
-  console.log("date1", date1);
+  // console.log("date1", date1);
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');

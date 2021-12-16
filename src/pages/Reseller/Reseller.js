@@ -30,7 +30,8 @@ class Reseller extends Component {
         isRenewing: false,
         willoptionUser:"",
         expireDate: "",
-        devices: 0
+        devices: 0,
+        seletedMonth:1,
     };
 
     static contextType = Context;
@@ -44,6 +45,8 @@ class Reseller extends Component {
         this.periodElRef = React.createRef();
         this.devicesElRef = React.createRef();
         this.renewElRef = React.createRef();
+        this.getInputValue = this.getInputValue.bind(this);
+
 
     }
 
@@ -99,7 +102,7 @@ class Reseller extends Component {
     renewUser = () => {
         this.setState({isLoading:true});
         const username = this.state.willoptionUser;
-        const renew = +this.renewElRef.current.value;
+        const renew = +this.state.seletedMonth;
         if (!renew|| renew<=0) {
             this.onToast("failed", "Please fill the form correctly");
             this.setState({isLoading: false});
@@ -395,7 +398,7 @@ class Reseller extends Component {
         const username = this.usernameElRef.current.value;
         const password = this.passwordElRef.current.value;
         const email = this.emailElRef.current.value;
-        const period = +this.periodElRef.current.value;
+        const period = +this.state.seletedMonth;
         const devices = +this.devicesElRef.current.value;
 
         if (username.trim().length === 0 || password.trim().length === 0 || email.trim().length === 0 ||  period <= 0 || devices <= 0) {
@@ -474,6 +477,10 @@ class Reseller extends Component {
     cancelCreateUser = () =>{
         this.setState({creating:false});
     }
+    getInputValue = (e) => {
+        // console.log("input Changed!", this.state.seletedMonth);
+        this.setState({seletedMonth: e.target.value})
+    }
     render() {
         return (
             <React.Fragment>
@@ -504,13 +511,22 @@ class Reseller extends Component {
                         <label htmlFor="email">Email Adress</label>
                         <input type="email" id="email" ref={this.emailElRef} />
                     </div>
-                    <div className="form-control">
+                    {/* <div className="form-control">
                         <label htmlFor="period">Period(Month)</label>
                         <input type="number" id="period" ref={this.periodElRef} />
+                    </div> */}
+                    <div className="form-control">
+                        <label htmlFor="period">Period(Month)</label>
+                        <select value={this.state.seletedMonth} onChange={this.getInputValue}>
+                            <option value="1">1 Month</option>
+                            <option value="3">3 Months</option>
+                            <option value="6">6 Months</option>
+                            <option value="12">12 Months</option>
+                        </select>
                     </div>
                     <div className="form-control">
                         <label htmlFor="devices">Devices</label>
-                        <input type="number" id="devices" ref={this.devicesElRef} />
+                        <input type="number" max="5" min="1" id="devices" ref={this.devicesElRef} />
                     </div>
                     {this.state.isLoading &&<Spinner />}
                 </form>
@@ -579,9 +595,18 @@ class Reseller extends Component {
                         <label htmlFor="devices">Devices</label>
                         <input type="number" id="devices" disabled value={this.state.devices}/>
                     </div>
-                    <div className="form-control">
+                    {/* <div className="form-control">
                         <label htmlFor="renew">Renew(Months)</label>
                         <input type="number" id="renew" ref={this.renewElRef} />
+                    </div> */}
+                    <div className="form-control">
+                        <label htmlFor="period">Renew(Month)</label>
+                        <select value={this.state.seletedMonth} onChange={this.getInputValue}>
+                            <option value="1">1 Month</option>
+                            <option value="3">3 Months</option>
+                            <option value="6">6 Months</option>
+                            <option value="12">12 Months</option>
+                        </select>
                     </div>
                     {this.state.isLoading &&<Spinner />}
                 </form>

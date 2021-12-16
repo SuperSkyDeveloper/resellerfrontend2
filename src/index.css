@@ -26,6 +26,7 @@ code {
 
 .form-control label,
 .form-control input,
+.form-control select,
 .form-control textarea {
   width: 100%;
   display: block;
@@ -34,7 +35,8 @@ code {
   text-align: center;
 }
 
-.form-control input {
+.form-control input,
+.form-control select {
   background-color: rgb(7, 45, 77);
   border: 1px solid #efecf3;
   border-radius: 5px;
@@ -152,7 +154,7 @@ code {
     font-size:20px;
     height:25px;
   }
-  .form-control input {
+  .form-control input, .form-control select {
     height:40px;
   }
 }
@@ -171,7 +173,7 @@ code {
     font-size:20px;
     height:25px;
   }
-  .form-control input {
+  .form-control input,.form-control select {
     height:35px;
   }
 }
